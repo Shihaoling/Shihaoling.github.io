@@ -39,18 +39,35 @@
             margin-right: 20px;
             margin-left: 20px;
         }
-        button{
+
+        button {
             box-shadow: 2px 1px 1px lightgray
         }
-        .me{
+
+        .me {
             box-shadow: 2px 1px 1px lightgray;
         }
+
+        h1 {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 10px;
+            margin-top: 3ex;
+            color: rgba(0, 0, 0, 0.708);
+            font-family: 'Times New Roman', Times, serif;
+            z-index: 100;
+        }
+
     </style>
     <script>
         $(function () {
             $(window).scroll(function () {
                 var st = $(this).scrollTop();
                 $('#carouselExampleCaptions').css({
+                    'opacity': 1 - st / 600
+                });
+                $('h1').css({
                     'opacity': 1 - st / 600
                 });
             })
@@ -81,24 +98,14 @@
 <body>
 
     <div class="content container-fluid">
-
-
-        <ul class="nav nav-pills">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="About_Me.html">About</a>
-            </li>
-        </ul>
-
+        <h1>SWUFE<br />Shi HaoLing</h1>
         <br>
 
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
 
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="extention/SWUFE.jpg" class="d-block w-100" alt="..." height="700px" width="1000px">
+                    <img src="extention/SWUFE.jpg" class="d-block w-100 school" alt="...">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>SWUFE</h5>
                         <p>Southwestern University of Finance and Economics, ChengDu</p>
