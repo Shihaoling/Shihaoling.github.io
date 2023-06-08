@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="Shi HaoLing">
+    <meta description="This is a homework for MISY 350">
+    <meta keywords="Shi HaoLing">
+    <title>Home</title>
+    <link rel="stylesheet" href="bootstrap-icons-1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .name {
+            text-align: center;
+            color: black;
+            font-weight: 800;
+            text-shadow: 2px 1px 1px gray;
+        }
+
+        .identity {
+            text-align: center;
+            color: rgb(104, 100, 100);
+        }
+
+        footer {
+            font-size: x-small;
+            color: lightgray;
+        }
+
+        .choose {
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+        button{
+            box-shadow: 2px 1px 1px lightgray
+        }
+        .me{
+            box-shadow: 2px 1px 1px lightgray;
+        }
+    </style>
+    <script>
+        $(function () {
+            $(window).scroll(function () {
+                var st = $(this).scrollTop();
+                $('#carouselExampleCaptions').css({
+                    'opacity': 1 - st / 600
+                });
+            })
+            $('#email').click(composeEmail)
+            // $('#email').popover();
+            $('.need_confirm').click(function () {
+                var alert_text = 'Do you want to leave the page?';
+                var want_leave = confirm(alert_text);
+                if (!want_leave) {
+                    // Prevent navigation
+                    event.preventDefault();
+                }
+            });
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+        })
+        function composeEmail() {
+            var clientEmail = document.getElementById("email").value;
+            var subject = "Hello";
+            var body = "Hello, HaoLing Shi!";
+            var emailLink = "mailto:" + clientEmail + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+            window.location.href = emailLink;
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <div class="content container-fluid">
+
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="Home.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="About_Me.html">About</a>
+            </li>
+        </ul>
+
+        <br>
+
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="extention/SWUFE.jpg" class="d-block w-100" alt="..." height="700px" width="1000px">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>SWUFE</h5>
+                        <p>Southwestern University of Finance and Economics, ChengDu</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <!-- Set my own picture -->
+        <img src="extention/suits.jpg" class="rounded-circle mx-auto d-block me" alt="..." width="100px" height='140px'>
+        <br>
+        <h2 class="name">Shi HaoLing</h2>
+        <br>
+        <h5 class="identity">Junior Student/MIS Major/Student President</h5>
+        <br>
+        <br>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-5"></div>
+                <div class="col-2">
+                    <div class="row">
+                        <div class="col"><button type="button" class="btn btn-outline-dark" value="henryhlshi@gmail.com"
+                                id="email" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="henryhlshi@gmail.com"><i class="bi bi-envelope"></i></button></div>
+                        <div class="col"><a href="https://github.com/Shihaoling"><button type="button"
+                                    class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    data-bs-title="Github"><i class="bi bi-github"></i></button></a>
+                        </div>
+                        <div class="col"><a
+                                href="https://maps.apple.com/place?q=Liulin%20Campus%2C%20Southwestern%20University%20of%20Finance%20and%20Economics&ll=30.681434%2C103.821142&auid=1117162439096964&lsp=57879&address=No.555%2C%20Liutai%20Avenue%2C%20Wenjiang%2C%20Chengdu%2C%20Sichuan%2C%20Wenjiang%2C%20Chengdu%2C%20Sichuan%20China"><button
+                                    type="button" class="btn btn-outline-dark need_confirm" data-bs-toggle="tooltip"
+                                    data-bs-placement="bottom" data-bs-title="Contact Address"><i
+                                        class="bi bi-building"></i></button></a></div>
+                    </div>
+                </div>
+                <div class="col-5"></div>
+            </div>
+            <br>
+            <br>
+            <div class="mx-auto">
+                <a href="Home.html"><button type="button" class="btn btn-light choose active">Home</button></a>
+                <a href=" About_Me.html"><button type="button" class="btn btn-light choose">About Me</button></a>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <hr>
+            <footer>Design and owned by: Shi HaoLing (or Henry Shi), 2023</footer>
+        </div>
+    </div>
+
+</body>
+
+</html>

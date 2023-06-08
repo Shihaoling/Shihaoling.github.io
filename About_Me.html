@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Page</title>
+    <link rel="stylesheet" href="bootstrap-icons-1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 200vh;
+            overflow-x: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .bg {
+            background-image: url("extention/snow2.jpeg");
+            background-size: cover;
+            background-position: 50% 50%;
+            height: 200vh;
+            font: 900 22rem '';
+            line-height: 130vh;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .bg::before {
+            content: '';
+            background-size: cover;
+            background-image: inherit;
+            background-position: 50% 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -99;
+        }
+
+        h1 {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 10px;
+            color: #fff;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        h5 {
+            position: absolute;
+            letter-spacing: 2px;
+            top: 120vh;
+            width: 60%;
+            color: #fff;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 30px;
+            background-color: rgba(0, 0, 0, .7);
+            font-family: Arial, Helvetica, sans-serif;
+            text-indent: 2em;
+        }
+
+
+        .bts {
+            margin-left: 35%;
+        }
+
+        hr {
+            border: 2px solid white;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a p {
+            font-size: x-small;
+            color: #fff;
+            display: inline;
+        }
+
+        a p:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>SWUFE<br />Shi HaoLing</h1>
+    <div class="bg"><span>HELLO</span></div>
+    <h5>
+        <div class="para1">Hello! It's great to see you here. My name is Shi HaoLing (you can call me Henry Shi as
+            well). I
+            come from Wuxi, Jiangsu,
+            China, where the food is especially sweety there. (You won't want to try it, haha)</div>
+        <br>
+        <div class="para2">I'm a Jounir student majored in Management Information System in Southwestern University of
+            Finance and Economics (AKA: SWUFE).
+            The undergraduate program is cooperated by both SWUFE and University of Delaware.</div>
+        <br>
+        <div class="para_cv">If you want to know more about me, please click the button below and you will get my CV
+            <a href="CV-SHI HaoLing.pdf" class="need_confirm"><button type="button" class="btn btn-outline-light"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="CV"><i
+                        class="bi bi-file-earmark-pdf"></i></button>
+                <p>CV_Shi HaoLing.pdf</p>
+            </a>
+        </div>
+
+        <br>
+        <br>
+        <hr>
+        <div class="bts">
+            <a href="Home.html"><button type="button" class="btn btn-light choose">Home</button></a>
+            &ensp;
+            <a href=" About_Me.html"><button type="button" class="btn btn-light choose active">About Me</button></a>
+        </div>
+    </h5>
+
+
+    <script>
+        var bg = document.querySelector(".bg")
+
+        $(function () {
+            $('.need_confirm').click(function () {
+                var alert_text = 'Do you want to leave the page?';
+                var want_leave = confirm(alert_text);
+                if (!want_leave) {
+                    // Prevent navigation
+                    event.preventDefault();
+                }
+            })
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        })
+        document.addEventListener('scroll', () => {
+            var scrollY = window.scrollY
+
+            if (scrollY !== 0) {
+                bg.style.backgroundPosition = `calc(50% + ${scrollY}px) calc(50% + ${scrollY}px)`
+            } else {
+                bg.style.backgroundPosition = ''
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>
