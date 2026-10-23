@@ -1,172 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta author="Shi HaoLing">
-    <meta description="This is a homework for MISY 350">
-    <meta keywords="Shi HaoLing">
-    <title>Home</title>
-    <link rel="stylesheet" href="bootstrap-icons-1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .name {
-            text-align: center;
-            color: black;
-            font-weight: 800;
-            text-shadow: 2px 1px 1px gray;
-        }
-
-        .identity {
-            text-align: center;
-            color: rgb(104, 100, 100);
-        }
-
-        footer {
-            font-size: x-small;
-            color: lightgray;
-        }
-
-        .choose {
-            margin-right: 20px;
-            margin-left: 20px;
-        }
-
-        button {
-            box-shadow: 2px 1px 1px lightgray
-        }
-
-        .me {
-            box-shadow: 2px 1px 1px lightgray;
-        }
-
-        h1 {
-            position: absolute;
-            text-align: center;
-            width: 100%;
-            letter-spacing: 10px;
-            margin-top: 3ex;
-            color: rgba(0, 0, 0, 0.708);
-            font-family: 'Times New Roman', Times, serif;
-            z-index: 100;
-        }
-
-    </style>
-    <script>
-        $(function () {
-            $(window).scroll(function () {
-                var st = $(this).scrollTop();
-                $('#carouselExampleCaptions').css({
-                    'opacity': 1 - st / 600
-                });
-                $('h1').css({
-                    'opacity': 1 - st / 600
-                });
-            })
-            $('#email').click(composeEmail)
-            // $('#email').popover();
-            $('.need_confirm').click(function () {
-                var alert_text = 'Do you want to leave the page?';
-                var want_leave = confirm(alert_text);
-                if (!want_leave) {
-                    // Prevent navigation
-                    event.preventDefault();
-                }
-            });
-            $('[data-bs-toggle="tooltip"]').tooltip();
-
-        })
-        function composeEmail() {
-            var clientEmail = document.getElementById("email").value;
-            var subject = "Hello";
-            var body = "Hello, HaoLing Shi!";
-            var emailLink = "mailto:" + clientEmail + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-            window.location.href = emailLink;
-        }
-
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e6f0f4">
+  <meta name="description" content="史昊灵的个人主页。国防科技大学管理科学与工程硕士在读，教育、实习、项目与旅行记录。">
+  <title>史昊灵 Haoling Shi · 个人主页</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="preload" as="image" href="./assets/ocean.webp">
+  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./styles/ocean.css">
+  <link rel="stylesheet" href="./styles/footprints.css">
+  <link rel="stylesheet" href="./styles/refinements.css">
+  <script type="module" src="./scripts/app.js"></script>
 </head>
-
 <body>
-
-    <div class="content container-fluid">
-        <h1>SWUFE<br />Shi HaoLing</h1>
-        <br>
-
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">
-
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="extention/SWUFE.jpg" class="d-block w-100 school" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>SWUFE</h5>
-                        <p>Southwestern University of Finance and Economics, ChengDu</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <br>
-        <br>
-        <br>
-        <!-- Set my own picture -->
-        <img src="extention/suits.jpg" class="rounded-circle mx-auto d-block me" alt="..." width="100px" height='140px'>
-        <br>
-        <h2 class="name">Shi HaoLing</h2>
-        <br>
-        <h5 class="identity">Junior Student/MIS Major/Student President</h5>
-        <br>
-        <br>
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-5"></div>
-                <div class="col-2">
-                    <div class="row">
-                        <div class="col"><button type="button" class="btn btn-outline-dark" value="henryhlshi@gmail.com"
-                                id="email" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                data-bs-title="henryhlshi@gmail.com"><i class="bi bi-envelope"></i></button></div>
-                        <div class="col"><a href="https://github.com/Shihaoling"><button type="button"
-                                    class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                    data-bs-title="Github"><i class="bi bi-github"></i></button></a>
-                        </div>
-                        <div class="col"><a
-                                href="https://maps.apple.com/place?q=Liulin%20Campus%2C%20Southwestern%20University%20of%20Finance%20and%20Economics&ll=30.681434%2C103.821142&auid=1117162439096964&lsp=57879&address=No.555%2C%20Liutai%20Avenue%2C%20Wenjiang%2C%20Chengdu%2C%20Sichuan%2C%20Wenjiang%2C%20Chengdu%2C%20Sichuan%20China"><button
-                                    type="button" class="btn btn-outline-dark need_confirm" data-bs-toggle="tooltip"
-                                    data-bs-placement="bottom" data-bs-title="Contact Address"><i
-                                        class="bi bi-building"></i></button></a></div>
-                    </div>
-                </div>
-                <div class="col-5"></div>
-            </div>
-            <br>
-            <br>
-            <div class="mx-auto">
-                <a href="index.html"><button type="button" class="btn btn-light choose active">Home</button></a>
-                <a href=" About_Me.html"><button type="button" class="btn btn-light choose">About Me</button></a>
-            </div>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <hr>
-            <footer>Design and owned by: Shi HaoLing (or Henry Shi), 2023</footer>
-        </div>
+  <div class="ocean-scene" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a href="#home" class="brand" aria-label="史昊灵，返回首页"><span class="monogram">h<span>.</span>s</span><span class="brand-name">史昊灵 <span>/ Haoling Shi</span></span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="打开导航"><span></span><span></span></button>
+      <nav id="main-nav" aria-label="主要导航"><a href="#home">首页</a><a href="#education">教育</a><a href="#experience">实习</a><a href="#work">项目与论文</a><a href="#travel">足迹</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
     </div>
-
+  </header>
+  <main id="main">
+    <section class="ocean-hero section-wrap" id="home" aria-labelledby="hero-title">
+      <div class="profile-overview">
+        <div class="identity-row"><div><p class="profile-english" id="hero-english">Haoling Shi</p><h1 id="hero-title">史昊灵</h1></div><div class="profile-avatar"><img src="./assets/portrait.webp" width="1400" height="1867" alt="史昊灵的生活照"></div></div>
+        <div class="profile-meta"><p class="profile-role">管理科学与工程 · 硕士在读</p><p class="profile-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="hero-location">目前常驻长沙</span></p></div>
+        <dl class="profile-facts" id="hero-facts"></dl>
+        <p id="intro" class="profile-intro"></p>
+        <div class="hero-actions"><a class="button button-primary" href="#experience">查看经历 <span aria-hidden="true">↓</span></a><a class="text-link" href="#contact">联系我 <span aria-hidden="true">↗</span></a></div>
+      </div>
+      <a href="#education" class="scroll-cue"><span class="scroll-line"></span> 向下查看 <span aria-hidden="true">↓</span></a>
+    </section>
+    <div class="content-surface">
+      <section class="education-section section-wrap" id="education" aria-labelledby="education-title">
+        <div class="section-heading"><div><p class="section-kicker">EDUCATION</p><h2 id="education-title">教育背景</h2></div></div>
+        <div class="education-grid" id="education-list"></div>
+        <div class="honors-strip"><span class="honors-label">荣誉与奖项</span><div id="honors"></div></div>
+      </section>
+      <section class="experience-band" id="experience" aria-labelledby="experience-title"><div class="section-wrap">
+        <div class="section-heading"><div><p class="section-kicker">EXPERIENCE</p><h2 id="experience-title">实习经历</h2></div></div>
+        <div class="experience-layout"><div class="experience-tabs" role="tablist" aria-label="选择实习经历" aria-orientation="vertical" id="experience-tabs"></div><div id="experience-panels"></div></div>
+      </div></section>
+      <section class="work-section section-wrap" id="work" aria-labelledby="work-title">
+        <div class="section-heading"><div><p class="section-kicker">PROJECTS</p><h2 id="work-title">项目与论文</h2></div><div class="filters" role="group" aria-label="筛选项目"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="industry" aria-pressed="false">实习项目</button><button data-filter="research" aria-pressed="false">科研项目</button></div></div>
+        <div class="projects-grid" id="projects"></div><p class="sr-only" id="filter-status" aria-live="polite"></p>
+        <div class="research-heading"><h3>论文</h3><p>卡车与无人机协同路径规划</p></div>
+        <div class="paper-list" id="papers"></div><p class="paper-footnote">已公开论文提供正式 DOI 链接；投稿中的研究暂不提供全文。</p>
+      </section>
+      <section class="perspective-section section-wrap ruled" id="perspective" aria-labelledby="perspective-title">
+        <div class="section-heading"><div><p class="section-kicker">SKILLS & ACTIVITIES</p><h2 id="perspective-title">技能与其他</h2></div></div>
+        <div class="perspective-grid"><figure class="life-photo"><img src="./assets/city.webp" width="1000" height="1333" loading="lazy" alt="史昊灵在城市夜景前的生活照"></figure><div class="skills-area"><div id="skills"></div><p class="activities-note">曾参与学生组织工作，并担任学生大使，参与美方教授接待。</p></div></div>
+      </section>
+      <section class="travel-section section-wrap ruled" id="travel" aria-labelledby="travel-title">
+        <div class="section-heading"><div><p class="section-kicker">TRAVEL</p><h2 id="travel-title">足迹</h2></div><p id="travel-summary">常驻中国大陆 · 到访过 7 个国家或地区</p></div>
+        <div class="travel-layout"><div id="travel-map"></div><aside class="travel-sidebar" aria-label="访问记录"><div id="travel-detail" aria-live="polite"></div><div id="travel-list"></div></aside></div>
+        <p class="travel-note">悬停或点击国家、标记和地点列表，可查看完整区域及记录；较小地区使用标记表示。</p>
+        <p class="travel-map-caption">地图资料：<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a> · <a href="https://geojson.cn/data/atlas/tiandi" target="_blank" rel="noopener noreferrer">GeoJSON.CN（天地图来源）</a> · <a href="https://fdi.swt.fujian.gov.cn/uploadfiles/file/20240904/1725417261979732.pdf#page=26" target="_blank" rel="noopener noreferrer">中国标准样图参考</a></p>
+      </section>
+      <section class="notes-section section-wrap ruled" id="notes" aria-labelledby="notes-title" hidden><div class="section-heading"><div><p class="section-kicker">NOTES</p><h2 id="notes-title">记录</h2></div></div><div id="notes-list"></div></section>
+      <section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="section-wrap contact-inner"><div><p class="section-kicker">CONTACT</p><h2 id="contact-title">联系我</h2><p>可通过邮件联系。</p></div><div class="contact-details"><a id="email-link" class="email-link"></a><div class="contact-options"><button id="copy-email">复制邮箱 <span aria-hidden="true">⧉</span></button><span class="contact-divider"></span><span id="github-slot" class="pending-link">GitHub · 待补充</span></div><div id="resume-slot"></div><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p></div></div></section>
+      <footer class="site-footer section-wrap"><a href="#home" class="footer-name">史昊灵 <span>/ Haoling Shi</span></a><span>更新于 <span id="updated"></span></span><a href="#home" class="back-top">回到顶部 ↑</a></footer>
+    </div>
+  </main>
+  <dialog id="project-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="section-kicker">项目详情</span><button id="close-dialog" class="dialog-close" aria-label="关闭项目详情">×</button></div><div id="dialog-content"></div></dialog>
+  <noscript><div class="noscript-note">史昊灵，国防科技大学管理科学与工程硕士在读。曾在平安银行信用卡中心、vivo、海创云实习。完整经历与地图交互需要启用 JavaScript。邮箱：Shihaoling@foxmail.com。</div></noscript>
 </body>
-
 </html>

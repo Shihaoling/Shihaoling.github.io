@@ -1,0 +1,186 @@
+/* Ocean introduction and compact layout. Component styles remain in main.css. */
+:root {
+  --ocean-opacity: 1;
+  --header-opacity: .35;
+  --ink: #203b4e;
+  --accent: #507b91;
+}
+body { isolation: isolate; }
+.ocean-scene {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url('../assets/ocean.webp') center center / cover no-repeat;
+  opacity: var(--ocean-opacity);
+  will-change: opacity;
+}
+.ocean-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(244,249,250,.85) 0%, rgba(244,249,250,.71) 34%, rgba(244,249,250,.2) 67%, rgba(244,249,250,.02) 100%),
+    linear-gradient(0deg, rgba(247,248,247,.38), transparent 30%);
+}
+.site-header {
+  height: 76px;
+  background: rgba(247,248,247,var(--header-opacity));
+  border-bottom: 1px solid rgba(118,144,157,.17);
+  backdrop-filter: blur(12px);
+}
+.nav-wrap { max-width: 1160px; }
+nav { gap: 29px; }
+nav .nav-contact { border-color: rgba(32,59,78,.3); }
+.ocean-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: calc(100svh - 76px);
+  min-height: 640px;
+  max-height: 870px;
+  padding-block: 35px 80px;
+}
+.profile-overview { max-width: 720px; width: 100%; }
+.identity-row { display: flex; align-items: center; gap: 33px; }
+.profile-english { font: 15px/1.6 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px; color: #496576; }
+#hero-title { font: 500 66px/1.4 var(--sans); letter-spacing: 5px; margin: 8px 0 0; }
+.profile-avatar { width: 90px; height: 90px; border: 3px solid #ffffffbd; border-radius: 50%; overflow: hidden; flex: 0 0 auto; background: #d5e9f1; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 47%; transform: scale(1.9); transform-origin: 50% 44%; }
+.profile-role { margin-top: 17px; font-size: 19px; letter-spacing: .5px; }
+.profile-facts { margin: 29px 0 0; display: grid; gap: 14px; }
+.profile-fact { display: grid; grid-template-columns: 48px 1fr; gap: 17px; }
+.profile-fact dt { font-size: 12px; color: #526e80; padding-top: 2px; }
+.profile-fact dd { margin: 0; font-size: 14px; line-height: 1.85; }
+.profile-fact strong { font-weight: 500; }
+.profile-fact small { display: block; font-size: 12px; color: #456172; }
+.profile-intro { max-width: 530px; font-size: 13px; line-height: 1.95; color: #425e6e; margin-top: 24px; }
+.ocean-hero .hero-actions { margin-top: 25px; gap: 27px; }
+.ocean-hero .button { padding: 10px 20px; }
+.ocean-hero .scroll-cue { bottom: 25px; color: #34576a; font-size: 11px; }
+.content-surface { background: rgba(247,248,247,.96); position: relative; }
+.content-surface h2 { font: 500 28px/1.5 var(--sans); letter-spacing: 0; }
+.section-kicker { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 7px; }
+.section-heading { margin-bottom: 24px; }
+.education-section, .perspective-section { padding-block: 42px; }
+.education-grid { gap: 44px; }
+.education-item { padding-top: 18px; }
+.education-item h3 { font-size: 23px; }
+.edu-meta { margin-bottom: 12px; }
+.edu-major { margin-top: 13px; }
+.edu-note { margin-top: 9px; }
+.honors-strip { margin-top: 25px; padding-top: 17px; }
+.experience-band { padding-block: 40px; }
+.experience-layout { gap: 38px; grid-template-columns: 230px 1fr; }
+.experience-panel { min-height: 300px; }
+.experience-panel h3 { margin-top: 10px; }
+.exp-summary { margin-top: 18px; font-size: 15px; }
+.exp-description { margin-top: 5px; }
+.exp-points { margin-block: 12px; }
+.experience-tab { padding-block: 17px; }
+.work-section { padding-block: 42px; }
+.project-art { height: 150px; padding-block: 6px 14px; }
+.project-body { padding: 20px; }
+.project-body h3 { margin-top: 6px; font-size: 18px; }
+.project-summary { margin-top: 8px; }
+.project-open { margin-top: 17px; }
+.research-heading { margin-top: 32px; margin-bottom: 15px; }
+.paper-item summary { padding-block: 17px; }
+.perspective-grid { grid-template-columns: 245px 1fr; gap: 45px; }
+.life-photo img { height: 225px; object-position: center 66%; }
+.skill-row { padding-block: 14px; }
+.skill-row:first-child { margin-top: 0; }
+.activities-note { margin-top: 17px; font-size: 12px; color: var(--muted); line-height: 1.9; }
+.travel-section { padding-block: 42px; }
+.travel-note { font-size: 11px; color: var(--muted); margin-top: 14px; }
+.contact-section { background: #e9eff0; color: var(--ink); border-top: 1px solid var(--line); }
+.contact-inner { padding-block: 32px 25px; grid-template-columns: 1fr 1.3fr; }
+.contact-section .section-kicker, .contact-section p:not(.section-kicker):not(.copy-status) { color: var(--muted); }
+.contact-section p:not(.section-kicker):not(.copy-status) { margin-top: 10px; }
+.contact-details { padding-top: 0; }
+.email-link { font: 23px/1.8 var(--sans); border-color: #bacad2; }
+.contact-options { margin-top: 12px; }
+.contact-options button, .pending-link { color: #536d7c; }
+.contact-options button:hover, .contact-options a:hover { color: var(--ink); }
+.contact-divider { background: #a7bac5; }
+.copy-status { color: #476d82; margin-top: 5px; }
+.site-footer { min-height: 68px; }
+#dialog-title { font: 500 26px/1.6 var(--sans); }
+
+@media (max-width: 1100px) {
+  nav { gap: 22px; }
+  .profile-overview { max-width: 640px; }
+  .ocean-hero { min-height: 630px; }
+  #hero-title { font-size: 60px; }
+}
+@media (max-width: 800px) {
+  .site-header { height: 72px; }
+  nav { top: 71px; gap: 4px; }
+  .ocean-hero { height: calc(100svh - 72px); min-height: 640px; max-height: 800px; }
+  .profile-overview { max-width: 580px; }
+  .ocean-scene::after { background: linear-gradient(90deg, #f4f9fadb, #f4f9fa99 55%, #f4f9fa33); }
+  .experience-layout { grid-template-columns: 175px 1fr; gap: 25px; }
+  .perspective-grid { grid-template-columns: 210px 1fr; gap: 28px; }
+  .life-photo img { height: 270px; }
+  .skill-row { grid-template-columns: 80px 1fr; gap: 10px; }
+  .project-body { padding: 17px 14px; }
+  .project-body h3 { font-size: 16px; }
+}
+@media (max-width: 600px) {
+  .ocean-hero { min-height: 650px; max-height: 780px; padding-block: 54px 70px; align-items: flex-start; }
+  .ocean-scene { background-position: 60% center; }
+  .ocean-scene::after { background: linear-gradient(90deg, #f4f9fad9, #f4f9fa94 70%, #f4f9fa59); }
+  .identity-row { gap: 23px; }
+  .profile-english { font-size: 12px; letter-spacing: 1.5px; }
+  #hero-title { font-size: 49px; letter-spacing: 3px; margin-top: 6px; }
+  .profile-avatar { width: 71px; height: 71px; border-width: 2px; }
+  .profile-role { font-size: 16px; margin-top: 16px; }
+  .profile-facts { gap: 15px; margin-top: 25px; }
+  .profile-fact { grid-template-columns: 34px 1fr; gap: 14px; }
+  .profile-fact dd { font-size: 13px; }
+  .profile-fact dt, .profile-fact small { font-size: 11px; }
+  .profile-intro { font-size: 12px; margin-top: 21px; max-width: 330px; }
+  .ocean-hero .hero-actions { margin-top: 23px; }
+  .ocean-hero .button { font-size: 12px; padding: 10px 18px; }
+  .ocean-hero .text-link { font-size: 12px; }
+  .ocean-hero .scroll-cue { bottom: 22px; font-size: 10px; }
+  .content-surface h2 { font-size: 25px; }
+  .education-section, .work-section, .perspective-section, .travel-section { padding-block: 31px; }
+  .section-heading { margin-bottom: 22px; }
+  .education-grid { gap: 23px; }
+  .education-item { padding-top: 17px; }
+  .education-item h3 { font-size: 22px; }
+  .experience-band { padding-block: 31px; }
+  .experience-layout { display: block; }
+  .experience-tabs { margin-bottom: 16px; }
+  .experience-tab { padding-block: 11px; }
+  .experience-panel { min-height: 345px; }
+  .experience-panel h3 { font-size: 19px; }
+  .exp-summary { margin-top: 15px; }
+  .exp-description { font-size: 12px; }
+  .exp-points { font-size: 12px; }
+  .project-art { height: 155px; padding-inline: 40px; }
+  .project-body { padding: 20px; }
+  .project-body h3 { font-size: 18px; }
+  .paper-item summary { padding-block: 16px; }
+  .perspective-grid { display: grid; grid-template-columns: 1fr; gap: 23px; }
+  .skills-area { grid-row: 1; }
+  .life-photo img { height: 210px; object-position: 50% 64%; }
+  .skill-row { grid-template-columns: 80px 1fr; padding-block: 13px; }
+  .travel-note { font-size: 10px; }
+  .contact-inner { display: block; padding-block: 29px 21px; }
+  .contact-details { padding-top: 19px; }
+  .email-link { font-size: 20px; }
+  .site-footer { min-height: 85px; padding-block: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ocean-scene { will-change: auto; }
+}
+@media print {
+  .ocean-scene, .profile-avatar { display: none; }
+  .content-surface { background: white; }
+  .ocean-hero { height: auto; min-height: 0; padding-block: 20px; }
+  #hero-title { font-size: 36px; }
+  .profile-facts { margin-top: 15px; gap: 8px; }
+  .profile-intro { margin-top: 13px; }
+}

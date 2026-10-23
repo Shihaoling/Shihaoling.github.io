@@ -1,0 +1,224 @@
+/* Typography: one system sans-serif family for natural Chinese/Latin screen reading. */
+:root {
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", "Noto Sans CJK SC", sans-serif;
+  --serif: var(--sans);
+  --ink: #213c4c;
+}
+body { font-family: var(--sans); font-size: 15px; font-weight: 400; line-height: 1.8; letter-spacing: 0; }
+h1, h2, h3, h4, nav, button, .brand, .section-kicker, .profile-role,
+.tag, .edu-meta, .edu-faculty, .edu-note, .exp-period, .exp-department,
+.project-context, .paper-status, .paper-venue, .paper-action, .paper-footnote,
+.skill-items, .travel-section, .site-footer, .contact-options, .copy-status {
+  font-family: var(--sans);
+}
+.section-kicker { font-size: 12px; font-weight: 500; letter-spacing: .04em; }
+h1, h2, h3, h4 { letter-spacing: 0; }
+.brand-name, .brand-name>span, .profile-role, .project-context { letter-spacing: 0; }
+.brand-name>span { font-size: 12px; }
+.monogram { font-family: var(--sans); font-style: normal; font-weight: 600; letter-spacing: -2px; }
+nav { font-size: 14px; }
+.button, .text-link { font-size: 14px; font-weight: 500; }
+.edu-en, .edu-index, .paper-index, .tab-period, .experience-panel .exp-period { font-family: var(--sans); font-style: normal; font-size: 12px; letter-spacing: 0; }
+.edu-meta, .edu-degree, .edu-faculty, .edu-note, .honors-strip, .project-context, .paper-venue, .paper-status, .paper-footnote, .paper-unavailable { font-size: 12px; }
+.tag, .project-body .tag, .filters button, .project-open, .skill-row h3, .skill-items { font-size: 12px; }
+.tab-company, .project-body h3, .education-item h3 { font-weight: 500; }
+.section-heading>p, .research-heading>p, .contact-options, .contact-options button, .copy-status, .site-footer, .site-footer>span, .footer-name span, .back-top { font-size: 12px; }
+.exp-points, .exp-description, .project-summary, .activities-note { line-height: 1.8; }
+.dialog-context, .dialog-block h3, .dialog-footnote { font-size: 13px; }
+.ocean-hero {
+  min-height: calc(100svh - 76px);
+  height: auto;
+  max-height: none;
+  padding-block: 40px 72px;
+  align-items: center;
+}
+.profile-overview {
+  max-width: 670px;
+  padding: 29px 32px 30px;
+  border: 1px solid #ffffffd9;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fdfefeef, #f8fbfbd9);
+  box-shadow: 0 16px 50px #244a6012, inset 0 1px #ffffff;
+  backdrop-filter: blur(14px);
+}
+.identity-row { justify-content: space-between; gap: 25px; }
+.profile-english { font: 14px/1.6 var(--sans); letter-spacing: .02em; }
+#hero-title { font: 600 52px/1.3 var(--sans); margin-top: 7px; letter-spacing: 0; }
+.profile-avatar { width: 82px; height: 82px; border-color: white; }
+.profile-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 9px; padding-bottom: 19px; border-bottom: 1px solid #c7d7dd; }
+.profile-role { font-size: 17px; margin: 0; }
+.profile-location { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border: 1px solid #d2dfe4; border-radius: 4px; color: #547080; background: #ffffff8c; font: 12px/1.6 var(--sans); white-space: nowrap; }
+.profile-location svg { width: 15px; height: 15px; flex-shrink: 0; }
+.profile-facts { grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 18px; }
+.profile-fact { display: block; padding: 14px 16px; border: 1px solid #d2dfe4; border-radius: 6px; background: #ffffffad; }
+.profile-fact dt { display: flex; align-items: center; gap: 8px; padding: 0; font: 12px/1.6 var(--sans); color: #547080; }
+.profile-fact dt svg { width: 20px; height: 20px; flex-shrink: 0; }
+.profile-fact dd { margin-top: 9px; line-height: 1.75; }
+.profile-fact strong { display: block; font: 500 20px/1.6 var(--sans); }
+.fact-major { display: block; font: 15px/1.8 var(--sans); margin-top: 2px; }
+.profile-fact small { font: 12px/1.8 var(--sans); margin-top: 2px; }
+.profile-fact .fact-period { color: #5c6f79; font-size: 12px; letter-spacing: 0; }
+.profile-fact-wide { grid-column: 1 / -1; display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 12px; }
+.profile-fact-wide dd { margin-top: 0; }
+.internship-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.internship-chips span { font: 12px/1.6 var(--sans); background: #eaf0f2; padding: 4px 9px; border-radius: 3px; }
+.profile-intro { font-size: 15px; line-height: 1.8; margin-top: 16px; max-width: none; }
+.ocean-hero .hero-actions { margin-top: 17px; }
+.ocean-hero .scroll-cue { font-family: var(--sans); font-size: 12px; letter-spacing: 0; }
+.content-surface {
+  background-color: #f0f4f4;
+  background-image: url('../assets/page-texture.svg'), radial-gradient(#a8c0ca38 .7px, transparent .8px);
+  background-size: 1440px 960px, 24px 24px;
+  background-position: center top, center top;
+  background-repeat: repeat-y, repeat;
+  padding-top: 24px;
+  border-top: 1px solid #dce7eb;
+}
+.education-section, .work-section, .perspective-section, .travel-section, .notes-section {
+  background: #ffffffd9;
+  border: 1px solid #dce5e7;
+  border-radius: 9px;
+  padding: 30px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 5px 20px #24475b04;
+}
+.content-surface h2 { font: 500 26px/1.6 var(--sans); }
+.section-heading { margin-bottom: 23px; }
+.section-heading>p { font-family: var(--sans); }
+.experience-band { background: #e9f0f2cf; margin-block: 24px; border-color: #d7e2e6; padding-block: 31px; }
+.experience-band>.section-wrap { padding-inline: 32px; }
+.education-item h3 { font-family: var(--sans); }
+.honors-strip { font-family: var(--sans); }
+.exp-points, .exp-description { font-family: var(--sans); font-size: 15px; }
+.exp-summary { font-size: 16px; }
+.exp-department { font-size: 13px; }
+.project-summary { font: 15px/1.8 var(--sans); }
+.project-body h3 { font-family: var(--sans); }
+.projects-grid { gap: 18px; }
+.project-art { height: 140px; }
+.project-body { padding: 19px; }
+.research-heading { margin-top: 29px; }
+.research-heading>p { font-family: var(--sans); }
+.paper-row { display: grid; grid-template-columns: minmax(0, 1fr) 105px; gap: 16px; align-items: start; border-top: 1px solid var(--line); }
+.paper-row:last-child { border-bottom: 1px solid var(--line); }
+.paper-item, .paper-item:last-child { border: 0; min-width: 0; }
+.paper-item summary { grid-template-columns: 24px minmax(0, 1fr) 61px 16px; gap: 12px; }
+.paper-title { font-family: var(--sans); font-size: 15px; font-weight: 500; min-width: 0; overflow-wrap: anywhere; }
+.paper-status { font-size: 12px; font-weight: 400; }
+.paper-plus { font-size: 18px; line-height: 1; }
+.paper-item[open] .paper-plus { transform: none; font-size: 0; }
+.paper-item[open] .paper-plus::after { content: "−"; font-size: 18px; line-height: 1; }
+.paper-action { padding-top: 23px; text-align: right; }
+.paper-direct { display: inline-flex; align-items: center; white-space: nowrap; gap: 8px; font-size: 12px; color: #34677e; border-bottom: 1px solid #a7bfca; }
+.paper-direct:hover { color: #143e53; border-color: #34677e; }
+.paper-unavailable { color: #5c6f79; font-size: 12px; }
+.paper-detail { padding-right: 15px; padding-left: 36px; font-size: 14px; }
+.paper-english { font: 15px/1.8 var(--sans); }
+.paper-citation { font: 12px/1.8 var(--sans); margin-top: 11px; }
+.paper-doi { font: 12px/1.8 var(--sans); margin-top: 5px; overflow-wrap: anywhere; }
+.activities-note { font: 15px/1.8 var(--sans); }
+.life-photo img { height: 218px; }
+.contact-section { background: #e1eaede6; }
+.contact-inner { padding-inline: 32px; }
+.email-link { font-family: var(--sans); }
+.contact-section p:not(.section-kicker):not(.copy-status) { font-family: var(--sans); font-size: 15px; }
+.travel-note { font-family: var(--sans); }
+.travel-place-date, .map-mobile-hint, .travel-detail-date { color: #5c6f79; }
+#dialog-title { font-family: var(--sans); }
+.dialog-block p { font-family: var(--sans); font-size: 15px; line-height: 1.8; }
+.profile-fact .fact-period, .experience-panel .exp-period, .tab-period, .paper-citation { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 1100px) {
+  .profile-overview { max-width: 620px; padding: 26px 28px; }
+  #hero-title { font-size: 50px; }
+  .education-section, .work-section, .perspective-section, .travel-section, .notes-section { padding-inline: 25px; }
+  .experience-band>.section-wrap, .contact-inner { padding-inline: 25px; }
+}
+@media (max-width: 800px) {
+  .ocean-hero { min-height: calc(100svh - 72px); height: auto; max-height: none; padding-block: 30px 65px; }
+  .profile-overview { max-width: 600px; }
+  .paper-row { grid-template-columns: minmax(0,1fr) 80px; gap: 8px; }
+  .paper-item summary { grid-template-columns: 20px minmax(0, 1fr) 57px 12px; gap: 8px; }
+  .paper-title { font-size: 14px; }
+  .paper-direct { font-size: 12px; }
+  .project-body { padding: 15px; }
+  .project-body h3 { font-size: 16px; }
+  .project-summary { font-size: 14px; }
+}
+@media (max-width: 600px) {
+  .ocean-hero { padding-top: 22px; padding-bottom: 62px; align-items: center; }
+  .profile-overview { padding: 23px 19px; border-radius: 9px; }
+  .identity-row { gap: 15px; }
+  #hero-title { font-size: 42px; letter-spacing: 0; }
+  .profile-english { font-size: 13px; }
+  .profile-avatar { width: 68px; height: 68px; }
+  .profile-meta { margin-top: 8px; padding-bottom: 15px; gap: 8px; }
+  .profile-role { font-size: 15px; }
+  .profile-facts { gap: 9px; margin-top: 13px; }
+  .profile-fact { padding: 10px 11px; }
+  .profile-fact dt { font-size: 12px; gap: 6px; }
+  .profile-fact dt svg { width: 16px; height: 16px; }
+  .profile-fact dd { margin-top: 7px; }
+  .profile-fact strong { font-size: 16px; line-height: 1.7; }
+  .fact-major { font-size: 13px; line-height: 1.8; min-height: 43px; }
+  .profile-fact small { font-size: 12px; min-height: 36px; }
+  .profile-fact .fact-period { font-size: 12px; letter-spacing: 0; min-height: 0; white-space: normal; }
+  .profile-fact-wide { display: block; padding: 11px; }
+  .profile-fact-wide dd { margin-top: 8px; }
+  .internship-chips { gap: 5px; }
+  .internship-chips span { font-size: 12px; padding: 3px 7px; }
+  .profile-intro { font-size: 14px; margin-top: 13px; line-height: 1.8; }
+  .ocean-hero .hero-actions { gap: 20px; margin-top: 15px; }
+  .ocean-hero .button { font-size: 13px; padding: 9px 15px; }
+  .ocean-hero .text-link { font-size: 13px; }
+  .ocean-hero .scroll-cue { bottom: 21px; }
+  .content-surface { padding-top: 16px; background-size: 900px 600px, 22px 22px; }
+  .education-section, .work-section, .perspective-section, .travel-section, .notes-section { padding: 23px 17px; margin-bottom: 16px; border-radius: 7px; }
+  .content-surface h2 { font-size: 23px; }
+  .section-heading { margin-bottom: 20px; }
+  .section-heading>p { font-size: 12px; }
+  .experience-band { margin-block: 16px; padding-block: 25px; }
+  .experience-band>.section-wrap { padding-inline: 0; }
+  .experience-panel { padding-inline: 3px; }
+  .education-item { grid-template-columns: 20px 1fr; }
+  .education-item h3 { font-size: 20px; }
+  .edu-meta { gap: 5px; font-size: 12px; }
+  .edu-degree { font-size: 12px; padding-inline: 6px; }
+  .edu-en { font-size: 12px; }
+  .edu-major { font-size: 14px; }
+  .edu-note { font-size: 12px; }
+  .exp-description, .exp-points { font-size: 14px; }
+  .project-body { padding: 18px; }
+  .project-body h3 { font-size: 18px; }
+  .project-art { height: 143px; }
+  .project-summary { font-size: 14px; }
+  .paper-row { grid-template-columns: minmax(0,1fr); gap: 0; padding-bottom: 12px; }
+  .paper-action { padding-top: 0; padding-left: 28px; text-align: left; }
+  .paper-direct { font-size: 12px; }
+  .paper-item summary { padding-block: 15px 9px; }
+  .paper-detail { padding-left: 28px; padding-right: 0; padding-bottom: 12px; font-size: 14px; }
+  .paper-english { font-size: 14px; }
+  .paper-footnote { font-size: 12px; }
+  .perspective-grid { gap: 19px; }
+  .skill-row { grid-template-columns: 67px 1fr; gap: 8px; }
+  .skill-items { gap: 7px 11px; }
+  .activities-note { font-size: 14px; }
+  .contact-inner { padding-inline: 0; }
+  .email-link { font-size: 19px; }
+}
+@media (max-width: 360px) {
+  .profile-overview { padding-inline: 15px; }
+  .profile-fact { padding-inline: 8px; }
+  .profile-fact strong { font-size: 14px; }
+  .profile-role { font-size: 14px; }
+  #hero-title { font-size: 39px; }
+  .profile-avatar { width: 59px; height: 59px; }
+  .internship-chips span { font-size: 12px; padding-inline: 6px; }
+  .filters button { padding-inline: 10px; }
+}
+@media print {
+  .content-surface { background: white; padding-top: 0; }
+  .ocean-hero { min-height: 0; padding-block: 10px; }
+  .profile-overview { box-shadow: none; backdrop-filter: none; border: 0; padding: 0; max-width: none; }
+  .education-section, .work-section, .perspective-section, .travel-section, .notes-section { box-shadow: none; border: 0; padding: 15px 0; }
+}

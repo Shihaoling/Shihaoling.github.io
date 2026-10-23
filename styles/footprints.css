@@ -1,0 +1,85 @@
+.map-host,.travel-detail,.travel-list{font-family:var(--sans)}
+.map-host{position:relative;min-width:0;max-width:100%}
+.map-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px}
+.map-legend{display:flex;align-items:center;gap:19px;color:#667d88;font-size:11px}
+.map-legend-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.map-key-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#52768b}
+.map-key-wishlist{background:transparent;border:1.5px solid #978367}
+.map-key-base{background:#84978b}
+.map-view-control{display:flex;padding:3px;border:1px solid #cfdbdf;border-radius:4px;gap:3px;flex-shrink:0}
+.map-view-button{padding:5px 13px;background:transparent;border:0;border-radius:2px;color:#647d89;font:11px var(--sans);cursor:pointer;min-height:29px}
+.map-view-button[aria-pressed="true"]{background:#2e5268;color:white}
+.map-view-button:focus-visible{outline:2px solid #9a805f;outline-offset:3px}
+.map-scroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#b8c9d0 #eef3f4;border:1px solid #dbe5e9;border-radius:6px;background:#f4f7f8;-webkit-overflow-scrolling:touch}
+.map-scroll:focus-visible{outline:2px solid #52768a;outline-offset:4px}
+.map-canvas{position:relative;width:100%;min-width:680px}
+.map-world{display:block;width:100%;height:auto;overflow:hidden}
+.map-grid{stroke:#dde7eb;stroke-width:.65;stroke-dasharray:2 5}
+.map-country{fill:transparent;stroke:transparent;stroke-width:1;pointer-events:fill;cursor:pointer;outline:none;transition:fill .12s,stroke .12s}
+.map-country-visited.is-active{fill:#7c9cad;fill-opacity:.62;stroke:#66899d}
+.map-country-wishlist.is-active{fill:#b9ab8e;fill-opacity:.65;stroke:#9d8b6c}
+.map-country-base.is-active{fill:#9aaea1;fill-opacity:.58;stroke:#7d9687}
+.map-china-boundary{fill:none;stroke:#7d9687;stroke-width:.8;visibility:hidden;pointer-events:none}
+.map-country-base.is-active + .map-china-boundary{visibility:visible}
+.map-country:focus-visible{stroke:#6b4f2d;stroke-width:1.8;stroke-dasharray:3 2}
+.map-point{--point:#345f78;cursor:pointer;outline:none}
+.map-wishlist{--point:#8f7c5d}
+.map-base{--point:#6e8476}
+.map-leader{stroke:#7b9aaa;stroke-width:1;stroke-dasharray:2 3;pointer-events:none}
+.map-pin-halo{fill:var(--point);fill-opacity:.1;stroke:none;pointer-events:all}
+.map-pin{fill:var(--point);stroke:#fff;stroke-width:1.4;pointer-events:all}
+.map-wishlist .map-pin{fill:#fbfcfc;stroke:var(--point);stroke-width:1.8}
+.map-label-bg{fill:#fafcfc;fill-opacity:.97;stroke:#c8d7de;stroke-width:.7}
+.map-label{fill:#3b596a;font:12px var(--sans);letter-spacing:.3px;pointer-events:none}
+.map-base .map-label{fill:#5a7363}
+.map-base .map-label-bg{fill:#f1f5f1;stroke:#cad6cd}
+.map-wishlist .map-label{fill:#79694e}
+.map-wishlist .map-label-bg{fill:#f8f6f0;stroke:#d8d0c0}
+.map-point:hover .map-label-bg,.map-point:focus-visible .map-label-bg,.map-point.is-active .map-label-bg{fill:var(--point);stroke:var(--point)}
+.map-point:hover .map-label,.map-point:focus-visible .map-label,.map-point.is-active .map-label{fill:#fff}
+.map-point.is-active .map-pin{fill:var(--point);stroke-width:2}
+.map-point.is-active .map-pin-halo{fill-opacity:.15;stroke:var(--point);stroke-width:.7}
+.map-point:focus-visible .map-label-bg{stroke:#b68755;stroke-width:2.5}
+.map-tooltip{position:absolute;z-index:4;pointer-events:none;min-width:125px;padding:10px 14px;border-radius:4px;background:#203f53;color:#fff;box-shadow:0 3px 12px #233c5015;font-size:12px;line-height:1.7;white-space:nowrap}
+.map-tooltip strong{font-size:13px;font-weight:500;display:block}
+.map-tooltip span{display:block;color:#d5e1e7;font-size:11px}
+.map-mobile-hint{display:none;color:#768b96;font-size:10px;line-height:1.6;margin-top:9px}
+.travel-detail{display:flex;align-items:baseline;gap:12px;min-height:48px;padding:15px 0;border-bottom:1px solid #dbe5e9;flex-wrap:wrap}
+.travel-detail-label{font-size:10px;letter-spacing:.5px;color:#6e8b9b}
+.travel-status-wishlist{color:#907b5a}
+.travel-status-base{color:#7a8e80}
+.travel-detail strong{font-weight:500;font-size:17px;color:#254458}
+.travel-detail-date{font-size:12px;color:#617986}
+.travel-list{display:block;margin-top:17px}
+.travel-group+.travel-group{margin-top:21px}
+.travel-group-title{display:flex;gap:9px;align-items:baseline;margin:0 0 1px;font:500 13px var(--sans);color:#345568}
+.travel-group-title span{font-size:10px;color:#8a9ba3;font-weight:400}
+.travel-group-wishlist .travel-group-title{color:#8c785b}
+.travel-group-items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 22px}
+.travel-place{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0;text-align:left;background:transparent;border:0;border-bottom:1px solid #e0e8eb;border-radius:0;color:#345568;font:12px var(--sans);min-height:47px;cursor:pointer;transition:color .15s}
+.travel-place-date{font-size:10px;color:#7b8c94;white-space:nowrap}
+.travel-place-wish{font-size:13px;color:#9a8a6f;line-height:1}
+.travel-place:hover,.travel-place.is-active{color:#183e56;border-bottom-color:#6d92a6}
+.travel-place.is-active .travel-place-date{color:#345568}
+.travel-place-wishlist:hover,.travel-place-wishlist.is-active{color:#7c6746;border-bottom-color:#a18c6b}
+.travel-place-wishlist.is-active .travel-place-wish{color:#7c6746}
+.travel-place:focus-visible{outline:2px solid #52768a;outline-offset:3px}
+.travel-map-caption{font-size:10px;color:#819098;margin-top:12px}
+.travel-map-caption a{border-bottom:1px solid #c8d3d8}
+.travel-layout{min-width:0}
+.travel-section{padding-block:46px}
+@media(max-width:900px){.travel-group-items{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 20px}}
+@media(max-width:700px){
+ .map-label{font-size:15px;letter-spacing:0}.map-mobile-hint{display:block}
+ .map-legend{font-size:10px;gap:12px}.map-view-button{font-size:10px;padding-inline:10px}
+ .travel-group-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+ .travel-place{font-size:12px;gap:5px}.travel-place-date{font-size:10px}
+ .travel-detail{padding-block:12px;gap:9px}.travel-detail strong{font-size:16px}.travel-detail-date{font-size:11px}
+ .travel-section{padding-block:36px}
+}
+@media(max-width:380px){
+ .map-toolbar{gap:9px}.map-legend{gap:9px;font-size:9px}.map-view-button{padding-inline:8px;min-height:30px}
+ .travel-group-items{column-gap:12px}.travel-place-visited{flex-direction:column;align-items:flex-start;gap:4px;padding-block:10px}
+ .map-mobile-hint{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.travel-place,.map-country{transition:none}}
