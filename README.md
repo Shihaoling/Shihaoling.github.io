@@ -1,15 +1,15 @@
 # 史昊灵 · Haoling Shi
 
-个人主页：[https://shihaoling.github.io/](https://shihaoling.github.io/)
+[访问我的个人主页 →](https://shihaoling.github.io/)
 
-使用原生 HTML、CSS 和 JavaScript，GitHub Pages 从 `main` 分支根目录发布，无需构建。`scripts/profile.js` 集中管理个人资料、经历、论文、访问记录和想去的地点；`currentBase` 管理首页常驻城市。
+我是史昊灵，目前在国防科技大学攻读管理科学与工程硕士，本科毕业于西南财经大学，现常驻长沙。
 
-- `index.html`：页面结构
-- `styles/`：布局和响应式样式
-- `scripts/`：内容与交互
-- `assets/`：照片、海面背景及地图资源
-- `.nojekyll`：静态文件直接发布
+主要研究车机协同路径规划。曾在平安银行信用卡中心、vivo 和海创云实习，参与数据分析、金融风控与互联网安全相关工作。
 
-地图来源：Natural Earth（https://www.naturalearthdata.com/）和 GeoJSON.CN 的天地图派生数据（https://geojson.cn/data/atlas/tiandi）。中国边界与境界线来源说明保留在 `assets/china-boundary.js` 中，页面底部附地图资料链接。海面背景为本项目生成图像。
+这个网站整理了我的教育背景、实习经历、项目与论文，也记录了旅行足迹和想去的地方。
 
-2026 年改版前的版本保存在 `backup-before-homepage-20261024` 分支；旧版其他文件仍保留。本次上传仅包含个人主页公开内容。
+联系邮箱：[Shihaoling@foxmail.com](mailto:Shihaoling@foxmail.com)
+
+---
+
+地图资料来自 [Natural Earth](https://www.naturalearthdata.com/) 与 [GeoJSON.CN（天地图来源数据）](https://geojson.cn/data/atlas/tiandi)。
