@@ -41,6 +41,7 @@ export function initFootprints(travel) {
   const host = document.getElementById('travel-map');
   const detail = document.getElementById('travel-detail');
   const list = document.getElementById('travel-list');
+  const status = document.getElementById('travel-status');
   if (!host || !detail || !list || !travel?.base || !Array.isArray(travel.visits)) return;
 
   const normalize = (entry, status, index) => ({ ...entry, status, id: status === 'base' ? 'base' : entry.id || `${status}-${index}`, countryCode: entry.countryCode || codeByName[entry.name], date: status === 'wishlist' ? '想去' : status === 'base' ? entry.date || '常驻' : entry.date });
@@ -53,7 +54,6 @@ export function initFootprints(travel) {
   let selected = records[0];
   host.replaceChildren(); list.replaceChildren();
   host.classList.add('map-host'); detail.classList.add('travel-detail'); list.classList.add('travel-list');
-  detail.setAttribute('aria-live', 'polite'); detail.setAttribute('aria-atomic', 'true');
 
   const toolbar = element('div', 'map-toolbar');
   const legend = element('div', 'map-legend');
@@ -74,7 +74,7 @@ export function initFootprints(travel) {
   }
   toolbar.append(legend, viewControl); host.append(toolbar);
   const scroll = element('div', 'map-scroll');
-  scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', '足迹地图，可横向滚动；下方地点列表同样可以选择。'); scroll.tabIndex = 0;
+  scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', '足迹地图，可横向滚动；下方收藏栏可展开选择地点。'); scroll.tabIndex = 0;
   const canvas = element('div', 'map-canvas');
   const svg = svgElement('svg', { viewBox: `0 0 ${WORLD.width} ${WORLD.height}`, class: 'map-world', 'aria-label': `常驻${travel.base.name}，去过 ${travel.visits.length} 个国家或地区，想去 ${(travel.wishlist || []).length} 个国家` });
   svg.append(svgElement('title', {}, '世界足迹与想去的地方'));
@@ -91,7 +91,7 @@ export function initFootprints(travel) {
   const markerLayer = svgElement('g', { class: 'map-markers' }); svg.append(geography, markerLayer);
   const tooltip = element('div', 'map-tooltip'); tooltip.id = 'travel-map-tooltip'; tooltip.hidden = true; tooltip.setAttribute('aria-hidden', 'true');
   canvas.append(svg, tooltip); scroll.append(canvas); host.append(scroll);
-  const hint = element('p', 'map-mobile-hint', '左右滑动地图，或点击下方地点'); host.append(hint);
+  const hint = element('p', 'map-mobile-hint', '左右滑动地图，点击国家或标记查看日期'); host.append(hint);
 
   const statusName = (entry) => ({ base: '常驻', visited: '去过', wishlist: '想去' })[entry.status];
   const mapPoint = (entry) => { const [x, y] = project(entry); const { k, tx, ty } = views[currentView]; return [x * k + tx, y * k + ty]; };
@@ -101,11 +101,14 @@ export function initFootprints(travel) {
     detail.replaceChildren(element('span', `travel-detail-label travel-status-${entry.status}`, statusName(entry)), element('strong', '', entry.name));
     // A wish is a category, never a dated visit.
     if (entry.status === 'visited') detail.append(element('span', 'travel-detail-date', entry.date));
+    if (status) status.textContent = `${statusName(entry)}：${entry.name}${entry.status === 'visited' ? `，${entry.date}` : ''}`;
   }
   function showTooltip(entry) {
     tooltip.replaceChildren(element('strong', '', entry.countryName || entry.name), element('span', '', entry.status === 'base' ? `常驻：${entry.name}` : entry.date)); tooltip.hidden = false;
     const [x, y] = mapPoint(entry); const scale = canvas.clientWidth / WORLD.width;
-    tooltip.style.left = `${Math.max(10, Math.min(canvas.clientWidth - tooltip.offsetWidth - 10, x * scale - tooltip.offsetWidth / 2))}px`;
+    const leftEdge = scroll.scrollLeft + 10;
+    const rightEdge = Math.max(leftEdge, scroll.scrollLeft + scroll.clientWidth - tooltip.offsetWidth - 10);
+    tooltip.style.left = `${Math.max(leftEdge, Math.min(rightEdge, x * scale - tooltip.offsetWidth / 2))}px`;
     tooltip.style.top = `${Math.max(9, Math.min(canvas.clientHeight - tooltip.offsetHeight - 9, y * scale - tooltip.offsetHeight - 19))}px`;
   }
   function activate(entry, withTooltip = false) {
@@ -121,7 +124,7 @@ export function initFootprints(travel) {
     node.addEventListener('pointerenter', () => activate(entry, true));
     node.addEventListener('focus', () => activate(entry, true));
     node.addEventListener('click', () => activate(entry, true));
-    node.addEventListener('pointerleave', () => { if (document.activeElement !== node) tooltip.hidden = true; });
+    node.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse' && document.activeElement !== node) tooltip.hidden = true; });
     node.addEventListener('blur', () => { tooltip.hidden = true; });
     node.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(entry, true); }
@@ -207,4 +210,7 @@ export function initFootprints(travel) {
   window.addEventListener('resize', () => {
     if (!tooltip.hidden && selected && isVisible(selected)) showTooltip(selected);
   });
+  scroll.addEventListener('scroll', () => {
+    if (!tooltip.hidden && selected && isVisible(selected)) showTooltip(selected);
+  }, { passive: true });
 }

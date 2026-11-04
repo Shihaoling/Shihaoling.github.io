@@ -33,7 +33,7 @@ $('#hero-facts').innerHTML = profile.education.map((item, index) => `
   <div class="profile-fact"><dt>${index === 0 ? icons.education : icons.book}<span>${index === 0 ? '硕士' : '本科'}</span></dt><dd><strong>${escape(item.school)}</strong><span class="fact-major">${escape(item.major)}</span><small>${escape(item.faculty)}</small><small class="fact-period">${escape(item.period)}</small></dd></div>`).join('') + `
   <div class="profile-fact profile-fact-wide"><dt>${icons.work}<span>实习经历</span></dt><dd class="internship-chips">${profile.experiences.map(item => `<span>${escape(item.id === 'pingan' ? '平安银行信用卡中心' : item.company)}</span>`).join('')}</dd></div>`;
 initFootprints(profile.travel);
-$('#travel-summary').textContent = `常驻${profile.travel.base.name} · 到访过 ${profile.travel.visits.length} 个国家或地区 · 想去 ${profile.travel.wishlist.length} 个`;
+$('#travel-summary').textContent = `去过 ${profile.travel.visits.length} · 想去 ${profile.travel.wishlist.length}`;
 
 // Fade only the scenic background; text and controls remain fully readable.
 const ocean = $('.ocean-scene');

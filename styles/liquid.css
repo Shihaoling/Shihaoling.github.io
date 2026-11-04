@@ -23,14 +23,30 @@ html[data-theme="dark"] {
 }
 .content-surface {
   background-image:
-    radial-gradient(ellipse at 12% 14%, #a5d3da38, transparent 28%),
-    radial-gradient(ellipse at 90% 67%, #a8d2c836, transparent 30%),
     url('../assets/page-texture.svg'),
     radial-gradient(#a8c0ca38 .7px, transparent .8px);
-  background-size: 100% 100%, 100% 100%, 1440px 960px, 24px 24px;
-  background-position: center, center, center top, center top;
-  background-repeat: no-repeat, no-repeat, repeat-y, repeat;
+  background-size: 1440px 960px, 24px 24px;
+  background-position: center top, center top;
+  background-repeat: repeat-y, repeat;
+  isolation: isolate;
 }
+.content-surface > :not(.ambient-glow) { position: relative; z-index: 1; }
+.ambient-glow { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.ambient-glow > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #84c7d580 0%, #9ad4cd59 29%, #afdce222 53%, transparent 72%);
+  opacity: 0;
+  transform: translate3d(-700px, -700px, 0);
+  transition: opacity .35s ease, background .85s ease;
+  will-change: transform, opacity;
+}
+.ambient-glow.is-visible > span { opacity: .88; }
+html[data-theme="dark"] .ambient-glow > span { background: radial-gradient(circle, #579fc080 0%, #5b8eaf51 31%, #6aa4b71b 54%, transparent 72%); }
 .site-header {
   -webkit-backdrop-filter: blur(28px) saturate(1.6);
   backdrop-filter: blur(28px) saturate(1.6);
@@ -97,8 +113,8 @@ html[data-theme="dark"] .publications-section.liquid-surface { background-color:
 .experience-panel.liquid-card { padding: 22px 25px; min-height: 315px; }
 .travel-sidebar.liquid-card { padding: 18px 22px; margin-top: 20px; }
 .contact-inner.liquid-surface { padding-inline: 36px; margin-block: 28px; }
-.contact-section { background-image: radial-gradient(circle at 84% 26%, #b8dce073, transparent 32%); }
-html[data-theme="dark"] .contact-section { background-image: radial-gradient(circle at 84% 26%, #54879a38, transparent 35%); }
+.contact-inner::before { display: none; }
+.contact-section, html[data-theme="dark"] .contact-section { background-image: none; }
 .email-link { overflow-wrap: anywhere; }
 .profile-fact {
   background-color: #ffffffb1;
@@ -133,6 +149,22 @@ html[data-theme="dark"] .experience-tab:not([aria-selected="true"]) { background
 .experience-tab[aria-selected="true"] { box-shadow: inset 0 1px #d4f1fb72, 0 8px 20px #1d405526; }
 .map-scroll { border-radius: 14px; border-color: #ffffffb7; box-shadow: inset 0 1px #fff, 0 7px 20px #31586a13; }
 html[data-theme="dark"] .map-scroll { border-color: #7da5b173; box-shadow: inset 0 1px #cbe8f02b, 0 7px 20px #03121d48; }
+.travel-collection { margin-top: 15px; border: 1px solid #ffffffc9; border-radius: 14px; background: #ffffff94; box-shadow: inset 0 1px #fff, 0 8px 24px #31586a13; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.travel-collection > summary { display: flex; align-items: center; gap: 10px; min-height: 54px; padding: 11px 18px; list-style: none; cursor: pointer; font: 13px/1.5 var(--sans); color: #294d60; }
+.travel-collection > summary::-webkit-details-marker { display: none; }
+.travel-collection > summary:focus-visible { outline: 2px solid #52768a; outline-offset: 3px; border-radius: 12px; }
+.travel-collection-title { font-weight: 600; white-space: nowrap; }
+.travel-collection-count { color: #6c858f; font-size: 12px; }
+.travel-collection-action { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; white-space: nowrap; color: #4a7083; }
+.travel-collapse-label { display: none; }
+.travel-collection[open] .travel-expand-label { display: none; }
+.travel-collection[open] .travel-collapse-label { display: inline; }
+.travel-collection-arrow { display: inline-block; font-size: 19px; line-height: 1; transition: transform .25s ease; }
+.travel-collection[open] .travel-collection-arrow { transform: rotate(180deg); }
+.travel-collection .travel-sidebar.liquid-card { margin: 0 14px 14px; padding: 8px 18px 18px; }
+html[data-theme="dark"] .travel-collection { border-color: #8ab1bc5d; background: #294858a6; box-shadow: inset 0 1px #d8f1ff25, 0 8px 24px #020d1859; }
+html[data-theme="dark"] .travel-collection > summary { color: #e5f2f5; }
+html[data-theme="dark"] .travel-collection-count, html[data-theme="dark"] .travel-collection-action { color: #b4d0da; }
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .liquid-surface {
     background-color: var(--liquid-clear);
@@ -154,6 +186,7 @@ html[data-theme="dark"] .map-scroll { border-color: #7da5b173; box-shadow: inset
   .liquid-surface:hover::after, .liquid-surface:focus-within::after { opacity: .74; }
   .liquid-card:hover { box-shadow: inset 0 1px #fff, inset -1px -1px var(--liquid-rim), 0 20px 42px var(--liquid-shadow); }
 }
+html.pointer-outside .liquid-surface::after { opacity: 0; }
 @media (max-width: 800px) {
   .site-header nav { -webkit-backdrop-filter: blur(22px) saturate(1.35); backdrop-filter: blur(22px) saturate(1.35); box-shadow: 0 14px 30px #1a3c501e, inset 0 1px #fff8; }
   html[data-theme="dark"] .site-header nav { box-shadow: 0 14px 30px #020b1469, inset 0 1px #d7efff22; }
@@ -163,19 +196,27 @@ html[data-theme="dark"] .map-scroll { border-color: #7da5b173; box-shadow: inset
   .liquid-card { border-radius: 14px; }
   .experience-panel.liquid-card { padding: 18px; min-height: 0; }
   .travel-sidebar.liquid-card { padding: 14px 15px; }
+  .travel-collection > summary { padding-inline: 13px; gap: 7px; }
+  .travel-collection-count { font-size: 10px; }
+  .travel-collection .travel-sidebar.liquid-card { margin: 0 9px 9px; padding: 7px 12px 14px; }
   .contact-inner.liquid-surface { padding-inline: 18px; margin-block: 18px; }
 }
 @media (prefers-reduced-transparency: reduce) {
+  .ambient-glow { display: none; }
+  .travel-collection, html[data-theme="dark"] .travel-collection { background: var(--liquid-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .liquid-surface, html[data-theme="dark"] .liquid-surface { background-color: var(--liquid-solid) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .liquid-card, html[data-theme="dark"] .liquid-card { background-color: var(--liquid-card-solid) !important; }
   .liquid-surface::after, .liquid-surface::before { display: none !important; }
   .site-header nav, .site-header { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .ambient-glow { display: none; }
+  .travel-collection-arrow { transition: none; }
   .liquid-surface, .liquid-surface::after { transition: none !important; }
   .liquid-surface::after { display: none; }
 }
 @media print {
+  .ambient-glow { display: none; }
   .liquid-surface, html[data-theme="dark"] .liquid-surface, .liquid-card, html[data-theme="dark"] .liquid-card { background: #fff !important; color: #182e46 !important; box-shadow: none !important; border-color: #ccd4d8 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .liquid-surface::before, .liquid-surface::after, .site-header::after { display: none !important; }
 }

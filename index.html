@@ -55,6 +55,7 @@
       <a href="#education" class="scroll-cue"><span class="scroll-line"></span> 向下查看 <span aria-hidden="true">↓</span></a>
     </section>
     <div class="content-surface">
+      <div class="ambient-glow" aria-hidden="true"><span></span></div>
       <section class="education-section section-wrap liquid-surface" id="education" aria-labelledby="education-title">
         <div class="section-heading"><div><p class="section-kicker">EDUCATION</p><h2 id="education-title">教育背景</h2></div></div>
         <div class="education-grid" id="education-list"></div>
@@ -78,9 +79,8 @@
         <div class="perspective-grid"><figure class="life-photo"><img src="./assets/city.webp" width="1000" height="1333" loading="lazy" alt="史昊灵在城市夜景前的生活照"></figure><div class="skills-area"><div id="skills"></div><p class="activities-note">曾参与学生组织工作，并担任学生大使，参与美方教授接待。</p></div></div>
       </section>
       <section class="travel-section section-wrap ruled liquid-surface" id="travel" aria-labelledby="travel-title">
-        <div class="section-heading"><div><p class="section-kicker">TRAVEL</p><h2 id="travel-title">足迹</h2></div><p id="travel-summary">常驻中国大陆 · 到访过 7 个国家或地区</p></div>
-        <div class="travel-layout"><div id="travel-map"></div><aside class="travel-sidebar liquid-surface liquid-card" aria-label="访问记录"><div id="travel-detail" aria-live="polite"></div><div id="travel-list"></div></aside></div>
-        <p class="travel-note">悬停或点击国家、标记和地点列表，可查看完整区域及记录；较小地区使用标记表示。</p>
+        <div class="section-heading"><div><p class="section-kicker">TRAVEL</p><h2 id="travel-title">足迹</h2></div></div>
+        <div class="travel-layout"><div id="travel-map"></div><p class="sr-only" id="travel-status" aria-live="polite"></p><details class="travel-collection"><summary><span class="travel-collection-title">收藏栏</span><span id="travel-summary" class="travel-collection-count"></span><span class="travel-collection-action" aria-hidden="true"><span class="travel-expand-label">展开</span><span class="travel-collapse-label">收起</span><span class="travel-collection-arrow">⌄</span></span></summary><aside class="travel-sidebar liquid-surface liquid-card" aria-label="访问记录"><div id="travel-detail"></div><div id="travel-list"></div></aside></details></div>
         <p class="travel-map-caption">地图资料：<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a> · <a href="https://geojson.cn/data/atlas/tiandi" target="_blank" rel="noopener noreferrer">GeoJSON.CN（天地图来源）</a> · <a href="https://fdi.swt.fujian.gov.cn/uploadfiles/file/20240904/1725417261979732.pdf#page=26" target="_blank" rel="noopener noreferrer">中国标准样图参考</a></p>
       </section>
       <section class="notes-section section-wrap ruled liquid-surface" id="notes" aria-labelledby="notes-title" hidden><div class="section-heading"><div><p class="section-kicker">NOTES</p><h2 id="notes-title">记录</h2></div></div><div id="notes-list"></div></section>
