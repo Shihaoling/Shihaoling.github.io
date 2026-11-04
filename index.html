@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#e6f0f4">
-  <meta name="description" content="史昊灵的个人主页。国防科技大学管理科学与工程硕士在读，教育、实习、项目与旅行记录。">
+  <meta name="description" content="史昊灵的个人主页。国防科技大学管理科学与工程硕士在读，展示教育、实习、项目、论文与旅行记录。">
   <title>史昊灵 Haoling Shi · 个人主页</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preload" as="image" href="./assets/ocean.webp">
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./styles/ocean.css">
   <link rel="stylesheet" href="./styles/footprints.css">
   <link rel="stylesheet" href="./styles/refinements.css">
+  <link rel="stylesheet" href="./styles/sections.css">
   <script type="module" src="./scripts/app.js"></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
     <div class="nav-wrap">
       <a href="#home" class="brand" aria-label="史昊灵，返回首页"><span class="monogram">h<span>.</span>s</span><span class="brand-name">史昊灵 <span>/ Haoling Shi</span></span></a>
       <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="打开导航"><span></span><span></span></button>
-      <nav id="main-nav" aria-label="主要导航"><a href="#home">首页</a><a href="#education">教育</a><a href="#experience">实习</a><a href="#work">项目与论文</a><a href="#travel">足迹</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
+      <nav id="main-nav" aria-label="主要导航"><a href="#home">首页</a><a href="#education">教育</a><a href="#experience">实习</a><a href="#work">项目</a><a href="#publications">论文</a><a href="#travel">足迹</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
     </div>
   </header>
   <main id="main">
@@ -46,10 +47,12 @@
         <div class="experience-layout"><div class="experience-tabs" role="tablist" aria-label="选择实习经历" aria-orientation="vertical" id="experience-tabs"></div><div id="experience-panels"></div></div>
       </div></section>
       <section class="work-section section-wrap" id="work" aria-labelledby="work-title">
-        <div class="section-heading"><div><p class="section-kicker">PROJECTS</p><h2 id="work-title">项目与论文</h2></div><div class="filters" role="group" aria-label="筛选项目"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="industry" aria-pressed="false">实习项目</button><button data-filter="research" aria-pressed="false">科研项目</button></div></div>
+        <div class="section-heading"><div><p class="section-kicker">PROJECTS</p><h2 id="work-title">项目经历</h2></div><div class="filters" role="group" aria-label="筛选项目"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="industry" aria-pressed="false">实习项目</button><button data-filter="research" aria-pressed="false">科研项目</button></div></div>
         <div class="projects-grid" id="projects"></div><p class="sr-only" id="filter-status" aria-live="polite"></p>
-        <div class="research-heading"><h3>论文</h3><p>卡车与无人机协同路径规划</p></div>
-        <div class="paper-list" id="papers"></div><p class="paper-footnote">已公开论文提供正式 DOI 链接；投稿中的研究暂不提供全文。</p>
+      </section>
+      <section class="publications-section section-wrap" id="publications" aria-labelledby="publications-title">
+        <div class="section-heading"><div><p class="section-kicker">PUBLICATIONS</p><h2 id="publications-title">论文发表</h2></div><p id="publications-summary"></p></div>
+        <div class="publications-list" id="papers"></div>
       </section>
       <section class="perspective-section section-wrap ruled" id="perspective" aria-labelledby="perspective-title">
         <div class="section-heading"><div><p class="section-kicker">SKILLS & ACTIVITIES</p><h2 id="perspective-title">技能与其他</h2></div></div>

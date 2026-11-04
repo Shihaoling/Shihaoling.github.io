@@ -7,7 +7,7 @@ export const profile = {
   email: 'Shihaoling@foxmail.com',
   github: 'https://github.com/Shihaoling',
   resume: '',
-  updated: '2026.10',
+  updated: '2026.11',
   intro: '主要研究车机协同路径规划，实习涉及数据分析、金融风控与互联网安全。',
   education: [
     { school: '国防科技大学', en: 'National University of Defense Technology', period: '2024.09 — 至今', degree: '工学硕士 · 在读', major: '管理科学与工程', faculty: '系统工程学院', note: '关注运筹优化、协同调度与智能优化算法。', mark: '01' },
@@ -24,9 +24,9 @@ export const profile = {
     { id: 'truck-drone', category: 'research', type: '科研项目', context: '运筹优化 · 协同路径规划', title: '车机协同路径规划', summary: '在配送与覆盖任务中，研究路径、任务分配与车机协同的优化方法。', tags: ['数学建模', '智能优化', '协同调度'], visual: 'routing', challenge: '车辆与无人机的移动方式、任务能力和约束不同，需要联合考虑任务分配与路径安排。', approach: '围绕拆分配送、多区域覆盖与故障感知等场景，开展数学建模、求解算法设计和编程实验。', contribution: '参与模型搭建与代码验证、算法框架设计、编程实现及实验工作。相关论文列于下方研究记录。', link: '' },
   ],
   papers: [
-    { title: 'Capacitated team orienteering with split delivery-based coordinated routing of truck-drone and drone-drone', chinese: '考虑容量约束与拆分配送的车机协同团队定向问题', venue: 'Expert Systems With Applications', status: '已发表', note: '第三作者（学生首位）；参与模型验证、算法框架设计、编程与实验。', citation: '2026 · Volume 329 · Article 132974', doi: '10.1016/j.eswa.2026.132974', link: 'https://doi.org/10.1016/j.eswa.2026.132974' },
-    { title: 'Coordinated Truck-Drone Routing for Multi-Area Coverage with Flexible Coverage Node Sequencing', chinese: '面向多区域覆盖的卡车–无人机协同路径规划', venue: 'IEEE ICUS 2025', status: '已发表', note: '第一作者；参与调度模型搭建、智能优化算法设计与编程实现。', citation: '2025 · pp. 492–497', doi: '10.1109/ICUS66297.2025.11294957', link: 'https://doi.org/10.1109/ICUS66297.2025.11294957' },
-    { title: 'Drone Failure Aware Truck Drone Collaborative Routing for MultiType Coverage Tasks', chinese: '考虑无人机故障的多类型覆盖任务协同路径规划', venue: '研究论文', status: '投稿中', linkNote: '暂无公开链接', note: '参与调度模型搭建、智能优化算法设计与编程实现。', link: '' },
+    { title: 'Coordinated Truck-Drone Routing for Multi-Area Coverage with Flexible Coverage Node Sequencing', chinese: '面向多区域覆盖的车机协同路径规划', venue: '2025 IEEE International Conference on Unmanned Systems (ICUS)', status: '已发表', role: '第一作者', year: '2025', note: '研究多区域覆盖任务中的车机协同路径与覆盖节点顺序。', citation: 'pp. 492–497', doi: '10.1109/ICUS66297.2025.11294957', link: 'https://doi.org/10.1109/ICUS66297.2025.11294957' },
+    { title: 'Failure-aware truck–drone collaborative routing for multi-type coverage tasks', chinese: '考虑无人机故障的多类型覆盖任务车机协同路径规划', venue: 'Applied Mathematical Modelling', status: '已发表', role: '第一作者', year: '', note: '研究无人机故障下的车机协同路径规划。', citation: '', doi: '', link: '' },
+    { title: 'Capacitated team orienteering with split delivery-based coordinated routing of truck-drone and drone-drone', chinese: '考虑容量约束与拆分配送的车机协同团队定向问题', venue: 'Expert Systems with Applications', status: '已发表', role: '第三作者 · 学生作者首位', year: '2026', note: '参与模型验证、算法框架设计、编程与实验。', citation: 'Vol. 329 · Article 132974', doi: '10.1016/j.eswa.2026.132974', link: 'https://doi.org/10.1016/j.eswa.2026.132974' },
   ],
   skills: [
     { title: '数据与编程', items: ['Python', 'SQL', '数据分析', '特征工程', 'Excel / SPSS'] },

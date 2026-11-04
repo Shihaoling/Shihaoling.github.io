@@ -151,10 +151,20 @@ dialog.addEventListener('close', () => {
   projectTrigger?.focus();
 });
 
+const publishedPapers = profile.papers.filter(paper => paper.status === '已发表');
+$('#publications-summary').textContent = `已发表 ${publishedPapers.length} 篇 · 第一作者 ${publishedPapers.filter(paper => paper.role === '第一作者').length} 篇`;
 $('#papers').innerHTML = profile.papers.map((paper, index) => `
-  <article class="paper-row"><details class="paper-item"><summary><span class="paper-index">${String(index + 1).padStart(2, '0')}</span><span class="paper-title">${escape(paper.chinese)}<span class="paper-venue">${escape(paper.venue)}</span></span><span class="paper-status">${escape(paper.status)}</span><span class="paper-plus" aria-hidden="true">+</span></summary>
-    <div class="paper-detail"><p class="paper-english" lang="en">${escape(paper.title)}</p><p>${escape(paper.note)}</p>${paper.citation ? `<p class="paper-citation" lang="en">${escape(paper.citation)}</p>` : ''}${paper.doi ? `<p class="paper-doi" lang="en">DOI: ${escape(paper.doi)}</p>` : ''}</div>
-  </details><div class="paper-action">${safeLink(paper.link) ? externalLink(paper.link, '论文链接', 'paper-direct') : `<span class="paper-unavailable">${escape(paper.linkNote || '暂无公开链接')}</span>`}</div></article>`).join('');
+  <article class="publication-card">
+    <span class="publication-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+    <div class="publication-body">
+      <div class="publication-meta"><span>${escape(paper.year || '期刊论文')}</span><span class="publication-role">${escape(paper.role)}</span></div>
+      <h3 class="publication-title" lang="en">${escape(paper.title)}</h3>
+      <p class="publication-chinese">${escape(paper.chinese)}</p>
+      <p class="publication-venue" lang="en">${escape(paper.venue)}${paper.citation ? ` · ${escape(paper.citation)}` : ''}</p>
+      <p class="publication-note">${escape(paper.note)}</p>
+      <div class="publication-action">${safeLink(paper.link) ? externalLink(paper.link, `查看论文 · DOI ${paper.doi}`, 'publication-link') : '<span class="publication-unavailable">公开链接待补</span>'}</div>
+    </div>
+  </article>`).join('');
 $('#skills').innerHTML = profile.skills.map(skill => `<div class="skill-row"><h3>${escape(skill.title)}</h3><div class="skill-items">${skill.items.map(item => `<span>${escape(item)}</span>`).join('')}</div></div>`).join('');
 
 if (profile.notes.length) {

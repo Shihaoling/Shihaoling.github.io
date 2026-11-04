@@ -1,0 +1,64 @@
+/* Give each part of the profile its own visual boundary. */
+.content-surface { padding-top: 34px; }
+.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section {
+  margin-bottom: 32px;
+  padding: 36px 40px;
+}
+.experience-band { margin-block: 0 32px; padding-block: 48px; }
+.section-heading {
+  align-items: end;
+  border-bottom: 1px solid #d5e0e4;
+  padding-bottom: 19px;
+  margin-bottom: 26px;
+}
+.section-heading > div:first-child { border-left: 3px solid #8fa8b3; padding-left: 15px; }
+.section-heading .section-kicker { margin-bottom: 4px; }
+.work-section .projects-grid { margin-bottom: 0; }
+.publications-section { background: #e9f1f0; border-color: #d2e1df; }
+.publications-section .section-heading > div:first-child { border-left-color: #77968d; }
+#publications-summary { color: #587075; line-height: 1.5; }
+.publications-list { display: grid; gap: 13px; }
+.publication-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 17px;
+  padding: 23px 25px;
+  background: #ffffffed;
+  border: 1px solid #d4e0df;
+  border-radius: 6px;
+}
+.publication-index { padding-top: 2px; color: #738b8b; font: 500 12px/1.7 var(--sans); font-variant-numeric: tabular-nums; }
+.publication-body { min-width: 0; }
+.publication-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 14px; color: #687d82; font-size: 12px; line-height: 1.5; }
+.publication-role { padding: 3px 8px; border-radius: 3px; border: 1px solid #cddbd8; color: #3e6466; background: #f5f9f8; }
+.publication-title { font: 500 18px/1.55 var(--sans); color: #203c4b; margin-top: 13px; overflow-wrap: anywhere; }
+.publication-chinese { margin-top: 6px; color: #526d78; font-size: 14px; }
+.publication-venue { margin-top: 15px; color: #475f6a; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+.publication-note { margin-top: 7px; color: #61777f; font-size: 13px; line-height: 1.7; }
+.publication-action { margin-top: 15px; padding-top: 13px; border-top: 1px solid #e1e9e8; min-width: 0; }
+.publication-link { display: inline-block; color: #315f70; border-bottom: 1px solid #abc2c7; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.publication-link:hover { color: #1e4556; border-color: #6f9ba5; }
+.publication-unavailable { color: #6a7b7f; font-size: 12px; }
+
+@media (max-width: 800px) {
+  .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section { padding: 27px 28px; }
+  .publication-title { font-size: 17px; }
+}
+@media (max-width: 600px) {
+  .content-surface { padding-top: 20px; }
+  .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section { margin-bottom: 22px; padding: 25px 18px; }
+  .experience-band { margin-block: 0 22px; padding-block: 29px; }
+  .section-heading { padding-bottom: 14px; margin-bottom: 21px; }
+  .section-heading > div:first-child { padding-left: 11px; }
+  #publications-summary { margin-top: 9px; }
+  .publication-card { display: block; padding: 18px 17px; }
+  .publication-index { display: block; margin-bottom: 6px; }
+  .publication-title { font-size: 16px; line-height: 1.55; margin-top: 11px; }
+  .publication-chinese { font-size: 13px; }
+  .publication-venue, .publication-note { font-size: 12px; }
+}
+@media print {
+  .content-surface { padding-top: 0; }
+  .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section { padding: 20px 0; margin: 0; border: 0; box-shadow: none; background: white; }
+  .publication-card { break-inside: avoid; }
+}
