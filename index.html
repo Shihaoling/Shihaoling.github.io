@@ -7,9 +7,10 @@
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="史昊灵的个人主页。国防科技大学管理科学与工程硕士在读，展示教育、实习、项目、论文与旅行记录。">
   <title>史昊灵 Haoling Shi · 个人主页</title>
-  <script>try { const savedTheme = localStorage.getItem('haoling-theme'); document.documentElement.dataset.theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch { document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }</script>
+  <script>(() => { const now = new Date(); const hour = now.getHours(); let mode = hour >= 6 && hour < 18 ? 'light' : 'dark'; try { const saved = JSON.parse(localStorage.getItem('haoling-theme-override-v2') || 'null'); const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; if ((saved?.mode === 'light' || saved?.mode === 'dark') && saved.until > now.getTime() && saved.zone === zone) mode = saved.mode; } catch {} document.documentElement.dataset.theme = mode; })();</script>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preload" as="image" href="./assets/ocean.webp">
+  <link rel="preload" as="image" href="./assets/ocean-night-v2.jpg">
   <link rel="stylesheet" href="./styles/main.css">
   <link rel="stylesheet" href="./styles/ocean.css">
   <link rel="stylesheet" href="./styles/footprints.css">
@@ -26,10 +27,12 @@
       <a href="#home" class="brand" aria-label="史昊灵，返回首页"><span class="monogram">h<span>.</span>s</span><span class="brand-name">史昊灵 <span>/ Haoling Shi</span></span></a>
       <nav id="main-nav" aria-label="主要导航"><a href="#home">首页</a><a href="#education">教育</a><a href="#experience">实习</a><a href="#work">项目</a><a href="#publications">论文</a><a href="#travel">足迹</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
       <div class="header-controls">
-        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换至夜间模式" aria-pressed="false">
-          <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2.2v2.1M12 19.7v2.1M21.8 12h-2.1M4.3 12H2.2M18.9 5.1l-1.5 1.5M6.6 17.4l-1.5 1.5M18.9 18.9l-1.5-1.5M6.6 6.6 5.1 5.1"/></svg>
-          <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 15.5A7.5 7.5 0 0 1 8.5 5 7.6 7.6 0 1 0 19 15.5Z"/><path d="M18.5 3.4v3M17 4.9h3M21 9v2M20 10h2"/></svg>
-          <span class="theme-label">日间</span>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="夜间模式" aria-pressed="false" title="按设备本地时间自动切换；手动选择保留到下一次昼夜交界">
+          <span class="theme-symbol" aria-hidden="true">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="3.6"/><path d="M12 2.2v2.1M12 19.7v2.1M21.8 12h-2.1M4.3 12H2.2M18.9 5.1l-1.5 1.5M6.6 17.4l-1.5 1.5M18.9 18.9l-1.5-1.5M6.6 6.6 5.1 5.1"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 15.5A7.5 7.5 0 0 1 8.5 5 7.6 7.6 0 1 0 19 15.5Z"/><path d="M18.5 3.4v3M17 4.9h3M21 9v2M20 10h2"/></svg>
+          </span>
+          <span class="theme-label" aria-hidden="true"><span class="theme-label-day">日间</span><span class="theme-label-night">夜间</span></span>
         </button>
         <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="打开导航"><span></span><span></span></button>
       </div>
