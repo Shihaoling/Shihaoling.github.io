@@ -34,11 +34,19 @@
 .publication-title { font: 500 18px/1.55 var(--sans); color: #203c4b; margin-top: 13px; overflow-wrap: anywhere; }
 .publication-chinese { margin-top: 6px; color: #526d78; font-size: 14px; }
 .publication-venue { margin-top: 15px; color: #475f6a; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+.publication-metrics { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+.publication-metric { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; padding: 5px 9px; border: 1px solid #d7e4e0; border-radius: 3px; background: #f5f9f7; line-height: 1.55; }
+.publication-metric small { color: #61777a; font-size: 11px; }
+.publication-metric strong { color: #31585d; font-size: 12px; font-weight: 600; }
 .publication-note { margin-top: 7px; color: #61777f; font-size: 13px; line-height: 1.7; }
-.publication-action { margin-top: 15px; padding-top: 13px; border-top: 1px solid #e1e9e8; min-width: 0; }
+.publication-action { display: flex; flex-wrap: wrap; gap: 7px 20px; margin-top: 15px; padding-top: 13px; border-top: 1px solid #e1e9e8; min-width: 0; }
 .publication-link { display: inline-block; color: #315f70; border-bottom: 1px solid #abc2c7; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .publication-link:hover { color: #1e4556; border-color: #6f9ba5; }
+.publication-share-link { color: #52757b; }
 .publication-unavailable { color: #6a7b7f; font-size: 12px; }
+.publications-metric-note { margin-top: 15px; color: #63797b; font-size: 11px; line-height: 1.7; }
+.publications-metric-note a { border-bottom: 1px solid #9cb9b7; }
+.publications-metric-note a:hover { color: #315f70; }
 
 @media (max-width: 800px) {
   .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section { padding: 27px 28px; }

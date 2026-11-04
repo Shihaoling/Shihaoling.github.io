@@ -161,8 +161,13 @@ $('#papers').innerHTML = profile.papers.map((paper, index) => `
       <h3 class="publication-title" lang="en">${escape(paper.title)}</h3>
       <p class="publication-chinese">${escape(paper.chinese)}</p>
       <p class="publication-venue" lang="en">${escape(paper.venue)}${paper.citation ? ` · ${escape(paper.citation)}` : ''}</p>
+      ${paper.metrics ? `<div class="publication-metrics" aria-label="2025 年期刊指标">
+        <span class="publication-metric"><small>中科院大类（2025）</small><strong>${escape(paper.metrics.cas)}</strong></span>
+        <span class="publication-metric"><small>JCR（2025）</small><strong>${escape(paper.metrics.jcr)}</strong></span>
+        <span class="publication-metric"><small>影响因子（2025 JIF）</small><strong>${escape(paper.metrics.jif)}</strong></span>
+      </div>` : ''}
       <p class="publication-note">${escape(paper.note)}</p>
-      <div class="publication-action">${safeLink(paper.link) ? externalLink(paper.link, `查看论文 · DOI ${paper.doi}`, 'publication-link') : '<span class="publication-unavailable">公开链接待补</span>'}</div>
+      <div class="publication-action">${safeLink(paper.link) ? externalLink(paper.link, paper.doi ? `查看论文 · DOI ${paper.doi}` : '查看论文', 'publication-link') : '<span class="publication-unavailable">公开链接待补</span>'}${externalLink(paper.shareLink, '作者分享链接', 'publication-link publication-share-link')}</div>
     </div>
   </article>`).join('');
 $('#skills').innerHTML = profile.skills.map(skill => `<div class="skill-row"><h3>${escape(skill.title)}</h3><div class="skill-items">${skill.items.map(item => `<span>${escape(item)}</span>`).join('')}</div></div>`).join('');
