@@ -1,0 +1,273 @@
+/* A quiet glass layer over the existing sea, with readable light and dark surfaces. */
+:root {
+  --paper: #edf3f5;
+  --white: #ffffff;
+  --ink: #203d4d;
+  --muted: #5e7480;
+  --line: #d3e0e4;
+  --accent: #577f91;
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  --paper: #101e2a;
+  --white: #1b303e;
+  --ink: #edf5f8;
+  --muted: #aec1c9;
+  --line: #3c5663;
+  --accent: #a7ccdc;
+  color-scheme: dark;
+}
+body { transition: background-color .35s ease, color .35s ease; }
+.site-header {
+  background: #edf5f8;
+  border-bottom-color: #ffffff9c;
+  box-shadow: 0 4px 22px #284d6310, inset 0 1px #fff9;
+  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  backdrop-filter: blur(22px) saturate(1.35);
+}
+.nav-wrap { gap: 16px; }
+nav { gap: 22px; }
+nav .nav-contact { border-radius: 999px; border-color: #a9c0ca; background: #ffffff45; }
+.header-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.theme-toggle {
+  min-width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 13px;
+  border: 1px solid #ffffffea;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffffffd9, #e7f0f5d9);
+  color: #466e80;
+  box-shadow: 0 5px 16px #32596b16, inset 0 1px #fff;
+  font: 12px/1 var(--sans);
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+}
+.theme-toggle .theme-icon { width: 20px; height: 20px; flex: 0 0 auto; }
+.theme-icon-moon { display: none; }
+html[data-theme="dark"] .theme-icon-sun { display: none; }
+html[data-theme="dark"] .theme-icon-moon { display: block; }
+.theme-toggle:focus-visible { outline: 3px solid #8eb9c9; outline-offset: 3px; }
+.ocean-hero { isolation: isolate; }
+.sky-decor { position: absolute; top: 8%; right: 4%; width: clamp(120px, 13vw, 175px); height: auto; pointer-events: none; opacity: .78; z-index: 0; filter: drop-shadow(0 10px 24px #f4e6bc66); }
+.sky-day, .sky-night { transform-origin: center; transition: opacity .5s ease, transform .7s ease; }
+.sky-night { opacity: 0; transform: translateY(8px) scale(.94); }
+.sky-halo { fill: #fff3d677; }
+.sky-sun { fill: #ffedc4; stroke: #fffcf0; stroke-width: 2; }
+.sky-rays { fill: none; stroke: #fff4d4; stroke-width: 2.4; stroke-linecap: round; }
+.sky-moon-halo { fill: #a2c4d422; }
+.sky-moon { fill: #e3edf7; stroke: #ffffffa8; stroke-width: 1.5; }
+.sky-stars { fill: none; stroke: #e7eff8; stroke-width: 2; stroke-linecap: round; }
+.sky-small-star { fill: #f5f8ff; }
+.profile-overview {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid #ffffffef;
+  border-radius: 22px;
+  background: #f2fafb;
+  box-shadow: 0 24px 70px #224b611d, 0 3px 12px #224b610d, inset 0 1px #fff;
+  -webkit-backdrop-filter: blur(26px) saturate(1.32);
+  backdrop-filter: blur(26px) saturate(1.32);
+  transition: box-shadow .35s ease, border-color .35s ease, background .35s ease;
+}
+.profile-overview::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 4%, #fff 37%, #ffffff52 76%, transparent);
+  pointer-events: none;
+}
+.profile-overview::after {
+  content: '';
+  position: absolute;
+  top: -110px;
+  left: -100px;
+  width: 300px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff75, transparent 70%);
+  pointer-events: none;
+  opacity: .5;
+  transition: transform .5s ease, opacity .5s ease;
+}
+.profile-overview > * { position: relative; z-index: 1; }
+.profile-fact {
+  border-color: #d5e4e8;
+  border-radius: 11px;
+  background: #fafdfe;
+  box-shadow: 0 5px 16px #3e69730a, inset 0 1px #fff;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.profile-location { border-radius: 999px; }
+.internship-chips span { border-radius: 999px; border: 1px solid #d5e3e7; background: #edf5f6; }
+.button-primary { border-radius: 999px; box-shadow: 0 7px 18px #284c6026; }
+.ocean-hero .text-link { border-bottom: 1px solid #7d9eaa; }
+.content-surface { background-color: #edf3f5; }
+.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section {
+  border-radius: 16px;
+  border-color: #ffffffd9;
+  background: #ffffffed;
+  box-shadow: 0 12px 35px #3153640c, inset 0 1px #fff;
+}
+.publications-section { background: #eaf3f1eb; border-color: #ffffffdd; }
+.section-heading { border-bottom-color: #d5e2e6; }
+.experience-band { background: #e9f3f5dc; border-block: 1px solid #ffffffbb; box-shadow: inset 0 1px #ffffffa8; }
+.project-card, .publication-card {
+  border-radius: 11px;
+  border-color: #d6e3e6;
+  box-shadow: 0 6px 18px #284d5e0a, inset 0 1px #fff;
+  transition: transform .26s ease, box-shadow .26s ease, border-color .26s ease;
+}
+.publication-card { background: #fffffff5; }
+.project-art { border-bottom-color: #dbe7e9; }
+.filters { border-radius: 999px; background: #ffffff8c; }
+.filters button { border-radius: 999px; }
+.experience-tab { border-radius: 8px; }
+.contact-section { background: linear-gradient(120deg, #e4eff2, #eff6f5); border-top-color: #fff; }
+.contact-inner { position: relative; }
+.contact-inner::before { content: ''; position: absolute; width: 210px; height: 210px; right: 4%; top: -90px; border-radius: 50%; background: radial-gradient(circle, #ffffffb0, transparent 70%); pointer-events: none; }
+.contact-inner > * { position: relative; }
+dialog { border-radius: 18px; border-color: #f4ffff; background: #f5f9fa; box-shadow: 0 26px 90px #102c3b55, inset 0 1px #fff; }
+
+@supports (backdrop-filter: blur(1px)) {
+  .site-header { background: rgb(237 246 249 / var(--header-opacity)); }
+  .profile-overview { background: linear-gradient(128deg, #ffffffd9, #f7fbfbd0 58%, #e8f3f4c7); }
+  .profile-fact { background: #ffffffa8; }
+}
+
+html[data-theme="dark"] body { background: #0e1b27; }
+html[data-theme="dark"] .ocean-scene { filter: brightness(.67) saturate(.74); }
+html[data-theme="dark"] .ocean-scene::after { background: linear-gradient(90deg, #101f2bed 0%, #132d3ccc 43%, #112a3961 100%), linear-gradient(0deg, #0d1a2670, transparent 38%); }
+html[data-theme="dark"] .site-header { background: #172b39; border-bottom-color: #90b7c332; box-shadow: 0 5px 24px #020b1442, inset 0 1px #ffffff18; }
+html[data-theme="dark"] .brand-name > span, html[data-theme="dark"] nav a { color: #d4e2e9; }
+html[data-theme="dark"] nav .nav-contact { border-color: #7397a67a; background: #a7cfdf12; }
+html[data-theme="dark"] .theme-toggle { background: linear-gradient(135deg, #334d5cc9, #1c3648d9); color: #e7f0f6; border-color: #a5c6d45c; box-shadow: 0 6px 20px #0005, inset 0 1px #ffffff29; }
+html[data-theme="dark"] .menu-toggle span { background: #e5f0f4; }
+html[data-theme="dark"] .sky-decor { filter: drop-shadow(0 10px 28px #c4ddff4d); opacity: .88; }
+html[data-theme="dark"] .sky-day { opacity: 0; transform: translateY(-8px) scale(.94); }
+html[data-theme="dark"] .sky-night { opacity: 1; transform: none; }
+html[data-theme="dark"] .profile-overview { background: #1b3242; border-color: #a1c3d05e; box-shadow: 0 28px 80px #06121f66, inset 0 1px #ffffff35; }
+html[data-theme="dark"] .profile-overview::before { background: linear-gradient(90deg, transparent 5%, #d9f1ff8a 35%, #e1f3ff25 75%, transparent); }
+html[data-theme="dark"] .profile-overview::after { background: radial-gradient(circle, #87b5c124, transparent 70%); }
+html[data-theme="dark"] .profile-english, html[data-theme="dark"] .profile-intro, html[data-theme="dark"] .profile-fact dt, html[data-theme="dark"] .profile-fact small, html[data-theme="dark"] .ocean-hero .scroll-cue { color: #c2d7df; }
+html[data-theme="dark"] .profile-meta { border-bottom-color: #84a8b64d; }
+html[data-theme="dark"] .profile-location { color: #c8e0e9; background: #a2c7d119; border-color: #aacbd448; }
+html[data-theme="dark"] .profile-fact { background: #254253; border-color: #85aebb49; box-shadow: 0 6px 18px #07172230, inset 0 1px #ffffff22; }
+html[data-theme="dark"] .internship-chips span { background: #3a5869; color: #ecf6f8; border-color: #8eafbb47; }
+html[data-theme="dark"] .button-primary { background: #b9d9e4; color: #17313f; box-shadow: 0 8px 22px #0719274d; }
+html[data-theme="dark"] .button-primary:hover { background: #d5edf3; }
+html[data-theme="dark"] .ocean-hero .text-link { color: #dfedf2; border-color: #a5cbd7; }
+html[data-theme="dark"] .content-surface { background-color: #101f2b; background-image: radial-gradient(circle at 84% 5%, #4a738433, transparent 26%), radial-gradient(circle at 10% 64%, #5274831f, transparent 28%), linear-gradient(#101f2b, #142532); border-top-color: #6a91a033; }
+html[data-theme="dark"] .education-section, html[data-theme="dark"] .work-section, html[data-theme="dark"] .publications-section, html[data-theme="dark"] .perspective-section, html[data-theme="dark"] .travel-section, html[data-theme="dark"] .notes-section { background: #1b2f3be8; border-color: #7698a13d; box-shadow: 0 15px 42px #06131e38, inset 0 1px #ffffff18; }
+html[data-theme="dark"] .publications-section { background: #1b343ce8; }
+html[data-theme="dark"] .section-heading { border-bottom-color: #799ba342; }
+html[data-theme="dark"] .section-heading > div:first-child { border-left-color: #8eb5bd; }
+html[data-theme="dark"] .publications-section .section-heading > div:first-child { border-left-color: #9bbdb0; }
+html[data-theme="dark"] #publications-summary, html[data-theme="dark"] .edu-meta, html[data-theme="dark"] .edu-en, html[data-theme="dark"] .edu-faculty, html[data-theme="dark"] .edu-note, html[data-theme="dark"] .exp-period, html[data-theme="dark"] .exp-department, html[data-theme="dark"] .project-context, html[data-theme="dark"] .project-summary, html[data-theme="dark"] .activities-note, html[data-theme="dark"] .section-kicker { color: #b3cbd2; }
+html[data-theme="dark"] .education-item, html[data-theme="dark"] .honors-strip, html[data-theme="dark"] .skill-row { border-color: #7b9aa246; }
+html[data-theme="dark"] .honors-strip #honors span, html[data-theme="dark"] .edu-degree { color: #d7eaf0; background: #335161; border-color: #789ca85c; }
+html[data-theme="dark"] .experience-band { background: #172e3bdf; border-color: #6f9aab35; box-shadow: inset 0 1px #ffffff12; }
+html[data-theme="dark"] .experience-tab { color: #d8e8ed; border-color: #698b994f; }
+html[data-theme="dark"] .experience-tab[aria-selected="true"] { background: #42677a; border-color: #719aab; color: #fff; }
+html[data-theme="dark"] .experience-tab:hover:not([aria-selected="true"]) { background: #2b4858; }
+html[data-theme="dark"] .project-card, html[data-theme="dark"] .publication-card { background: #213946; border-color: #7594a34d; box-shadow: 0 8px 22px #06162133, inset 0 1px #ffffff16; }
+html[data-theme="dark"] .project-art { background: #294756; border-bottom-color: #62809059; }
+html[data-theme="dark"] .project-art.pipeline { background: #3b4549; }
+html[data-theme="dark"] .project-art.routing { background: #304b49; }
+html[data-theme="dark"] .project-body .tag, html[data-theme="dark"] .tag { background: #304e5d; border-color: #779ba755; color: #d8e9ef; }
+html[data-theme="dark"] .project-open, html[data-theme="dark"] .publication-action { border-top-color: #809fa74d; }
+html[data-theme="dark"] .filters { background: #1a313d; border-color: #7498a552; }
+html[data-theme="dark"] .filters button { color: #bfd1d8; }
+html[data-theme="dark"] .filters button.active { background: #52768a; color: white; }
+html[data-theme="dark"] .filters button:hover:not(.active) { background: #2c4c5a; }
+html[data-theme="dark"] .publication-title { color: #f1f8fa; }
+html[data-theme="dark"] .publication-meta, html[data-theme="dark"] .publication-chinese, html[data-theme="dark"] .publication-venue, html[data-theme="dark"] .publication-note, html[data-theme="dark"] .publication-index, html[data-theme="dark"] .publications-metric-note { color: #b7ccd4; }
+html[data-theme="dark"] .publication-role, html[data-theme="dark"] .publication-metric { background: #2b4c55; border-color: #7fa59b57; color: #d4ece6; }
+html[data-theme="dark"] .publication-metric small { color: #c0d6d6; }
+html[data-theme="dark"] .publication-metric strong { color: #eaf8f1; }
+html[data-theme="dark"] .publication-link { color: #b5dde7; border-bottom-color: #6a9ead; }
+html[data-theme="dark"] .publication-link:hover { color: #e4f9fd; }
+html[data-theme="dark"] .publications-metric-note a { border-bottom-color: #79a6af; }
+html[data-theme="dark"] .map-scroll { background: #192e3a; border-color: #6888956b; scrollbar-color: #527080 #1b3441; }
+html[data-theme="dark"] .map-world image { opacity: .54; }
+html[data-theme="dark"] .map-grid { stroke: #73949d77; }
+html[data-theme="dark"] .map-view-control { background: #203a48; border-color: #7596a65e; }
+html[data-theme="dark"] .map-view-button, html[data-theme="dark"] .map-legend, html[data-theme="dark"] .map-mobile-hint, html[data-theme="dark"] .travel-map-caption { color: #b8cbd2; }
+html[data-theme="dark"] .map-view-button[aria-pressed="true"] { background: #52798d; color: white; }
+html[data-theme="dark"] .map-label-bg { fill: #244454; fill-opacity: .96; stroke: #8baeba; }
+html[data-theme="dark"] .map-label { fill: #e8f2f5; }
+html[data-theme="dark"] .map-base .map-label-bg { fill: #304c47; stroke: #95b4a5; }
+html[data-theme="dark"] .map-base .map-label { fill: #e7f4e9; }
+html[data-theme="dark"] .map-wishlist .map-label-bg { fill: #504c40; stroke: #b8aa87; }
+html[data-theme="dark"] .map-wishlist .map-label { fill: #f2eacb; }
+html[data-theme="dark"] .map-tooltip { background: #dbeaf0; color: #173340; box-shadow: 0 8px 20px #020b14a8; }
+html[data-theme="dark"] .map-tooltip span { color: #42606c; }
+html[data-theme="dark"] .travel-detail { border-bottom-color: #73909c55; }
+html[data-theme="dark"] .travel-detail strong, html[data-theme="dark"] .travel-group-title, html[data-theme="dark"] .travel-place { color: #e1eff3; }
+html[data-theme="dark"] .travel-detail-label, html[data-theme="dark"] .travel-detail-date, html[data-theme="dark"] .travel-place-date { color: #abc5ce; }
+html[data-theme="dark"] .travel-group-wishlist .travel-group-title, html[data-theme="dark"] .travel-place-wish { color: #d4c59e; }
+html[data-theme="dark"] .travel-place { border-bottom-color: #6c8a9752; }
+html[data-theme="dark"] .travel-place:hover, html[data-theme="dark"] .travel-place.is-active { color: #fff; border-bottom-color: #9dc6d5; }
+html[data-theme="dark"] .travel-note { color: #a9c1ca; }
+html[data-theme="dark"] .contact-section { background: linear-gradient(115deg, #172d3b, #213b48); border-top-color: #6a91a047; }
+html[data-theme="dark"] .contact-inner::before { background: radial-gradient(circle, #6a9cad20, transparent 70%); }
+html[data-theme="dark"] .contact-section p:not(.section-kicker):not(.copy-status), html[data-theme="dark"] .contact-section .section-kicker, html[data-theme="dark"] .contact-options, html[data-theme="dark"] .contact-options button { color: #c6d9e0; }
+html[data-theme="dark"] .email-link { border-color: #82a7b675; }
+html[data-theme="dark"] .copy-status { color: #b7d7e0; }
+html[data-theme="dark"] .site-footer { color: #b8cbd3; }
+html[data-theme="dark"] dialog { background: #1c3341; color: #edf5f8; border-color: #8bb1bd60; box-shadow: 0 28px 90px #030a12ae, inset 0 1px #ffffff27; }
+html[data-theme="dark"] .dialog-close { background: #345464; color: #eef8fa; }
+html[data-theme="dark"] .dialog-context, html[data-theme="dark"] .dialog-footnote { color: #b5cbd4; }
+@supports (backdrop-filter: blur(1px)) {
+  html[data-theme="dark"] .site-header { background: rgb(21 40 53 / var(--header-opacity)); }
+  html[data-theme="dark"] .profile-overview { background: linear-gradient(135deg, #254354dc, #172e3ec7 72%, #244352b7); }
+  html[data-theme="dark"] .profile-fact { background: #2b4b5eb8; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 9px 22px #31586e24, inset 0 1px #fff; }
+  .profile-overview:hover::after { opacity: .8; transform: translate(26px, 12px); }
+  .profile-fact:hover { transform: translateY(-2px); border-color: #a5cad3; box-shadow: 0 9px 20px #3e69731a, inset 0 1px #fff; }
+  .project-card:hover, .publication-card:hover { transform: translateY(-3px); border-color: #a9c6cc; box-shadow: 0 16px 35px #284d5e19, inset 0 1px #fff; }
+  html[data-theme="dark"] .project-card:hover, html[data-theme="dark"] .publication-card:hover { border-color: #8bb8c4; box-shadow: 0 18px 38px #020f1970, inset 0 1px #ffffff28; }
+}
+@media (max-width: 1000px) { .sky-decor { width: 105px; right: 0; top: 4%; opacity: .57; } }
+@media (max-width: 800px) {
+  .site-header nav { background: #edf5f8f2; border-bottom-color: #d6e4e8; }
+  html[data-theme="dark"] .site-header nav { background: #1b3442f2; border-bottom-color: #7095a463; }
+}
+@media (max-width: 600px) {
+  .nav-wrap { gap: 8px; }
+  .theme-toggle { width: 44px; padding: 0; }
+  .theme-label, .sky-decor { display: none; }
+  .profile-overview { border-radius: 16px; }
+  .profile-fact { border-radius: 8px; }
+  .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section { border-radius: 12px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .site-header, html[data-theme="dark"] .site-header { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .profile-overview, html[data-theme="dark"] .profile-overview, .profile-fact, html[data-theme="dark"] .profile-fact, .theme-toggle { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .site-header { background: #edf5f8 !important; }
+  html[data-theme="dark"] .site-header { background: #172b39 !important; }
+  .profile-overview { background: #f2fafb !important; }
+  html[data-theme="dark"] .profile-overview { background: #1b3242 !important; }
+  .profile-fact { background: #fafdfe !important; }
+  html[data-theme="dark"] .profile-fact { background: #254253 !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body, .sky-day, .sky-night, .theme-toggle, .profile-overview, .profile-overview::after, .profile-fact, .project-card, .publication-card { transition: none !important; animation: none !important; }
+}
+@media print {
+  :root, html[data-theme="dark"] { --paper: #fff; --white: #fff; --ink: #182e46; --muted: #52616a; --line: #ccd4d8; color-scheme: light; }
+  .theme-toggle, .sky-decor { display: none !important; }
+  .site-header, .profile-overview, .profile-fact, .education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section, .experience-band, .project-card, .publication-card, .contact-section, dialog { background: #fff !important; color: #182e46 !important; box-shadow: none !important; border-color: #ccd4d8 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .content-surface { background: #fff !important; }
+}

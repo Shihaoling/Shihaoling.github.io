@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#e6f0f4">
+  <meta name="color-scheme" content="light dark">
   <meta name="description" content="史昊灵的个人主页。国防科技大学管理科学与工程硕士在读，展示教育、实习、项目、论文与旅行记录。">
   <title>史昊灵 Haoling Shi · 个人主页</title>
+  <script>try { const savedTheme = localStorage.getItem('haoling-theme'); document.documentElement.dataset.theme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch { document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }</script>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="preload" as="image" href="./assets/ocean.webp">
   <link rel="stylesheet" href="./styles/main.css">
@@ -13,6 +15,7 @@
   <link rel="stylesheet" href="./styles/footprints.css">
   <link rel="stylesheet" href="./styles/refinements.css">
   <link rel="stylesheet" href="./styles/sections.css">
+  <link rel="stylesheet" href="./styles/theme.css">
   <script type="module" src="./scripts/app.js"></script>
 </head>
 <body>
@@ -21,12 +24,23 @@
   <header class="site-header">
     <div class="nav-wrap">
       <a href="#home" class="brand" aria-label="史昊灵，返回首页"><span class="monogram">h<span>.</span>s</span><span class="brand-name">史昊灵 <span>/ Haoling Shi</span></span></a>
-      <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="打开导航"><span></span><span></span></button>
       <nav id="main-nav" aria-label="主要导航"><a href="#home">首页</a><a href="#education">教育</a><a href="#experience">实习</a><a href="#work">项目</a><a href="#publications">论文</a><a href="#travel">足迹</a><a class="nav-contact" href="#contact">联系 <span aria-hidden="true">↗</span></a></nav>
+      <div class="header-controls">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换至夜间模式" aria-pressed="false">
+          <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2.2v2.1M12 19.7v2.1M21.8 12h-2.1M4.3 12H2.2M18.9 5.1l-1.5 1.5M6.6 17.4l-1.5 1.5M18.9 18.9l-1.5-1.5M6.6 6.6 5.1 5.1"/></svg>
+          <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 15.5A7.5 7.5 0 0 1 8.5 5 7.6 7.6 0 1 0 19 15.5Z"/><path d="M18.5 3.4v3M17 4.9h3M21 9v2M20 10h2"/></svg>
+          <span class="theme-label">日间</span>
+        </button>
+        <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="打开导航"><span></span><span></span></button>
+      </div>
     </div>
   </header>
   <main id="main">
     <section class="ocean-hero section-wrap" id="home" aria-labelledby="hero-title">
+      <svg class="sky-decor" viewBox="0 0 160 160" aria-hidden="true" focusable="false">
+        <g class="sky-day"><circle class="sky-halo" cx="80" cy="80" r="55"/><circle class="sky-sun" cx="80" cy="80" r="25"/><path class="sky-rays" d="M80 15v21M80 124v21M15 80h21M124 80h21M34 34l15 15M111 111l15 15M126 34l-15 15M49 111l-15 15"/></g>
+        <g class="sky-night"><circle class="sky-moon-halo" cx="83" cy="78" r="54"/><path class="sky-moon" d="M99 47a36 36 0 1 0 18 62 37 37 0 0 1-18-62Z"/><path class="sky-stars" d="M42 31v14M35 38h14M126 55v11M120.5 60.5h11M42 115v8M38 119h8"/><circle class="sky-small-star" cx="123" cy="119" r="2"/></g>
+      </svg>
       <div class="profile-overview">
         <div class="identity-row"><div><p class="profile-english" id="hero-english">Haoling Shi</p><h1 id="hero-title">史昊灵</h1></div><div class="profile-avatar"><img src="./assets/portrait.webp" width="1400" height="1867" alt="史昊灵的生活照"></div></div>
         <div class="profile-meta"><p class="profile-role">管理科学与工程 · 硕士在读</p><p class="profile-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="hero-location">目前常驻长沙</span></p></div>

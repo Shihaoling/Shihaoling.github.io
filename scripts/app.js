@@ -1,5 +1,6 @@
 import { profile } from './profile.js';
 import { initFootprints } from './footprints.js';
+import { initTheme } from './theme.js';
 
 const $ = (selector) => document.querySelector(selector);
 const escape = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -15,6 +16,8 @@ const externalLink = (url, text, className = '') => {
   const href = safeLink(url);
   return href ? `<a class="${escape(className)}" href="${escape(href)}" target="_blank" rel="noopener noreferrer">${escape(text)} ↗</a>` : '';
 };
+
+initTheme();
 
 $('#intro').textContent = profile.intro;
 $('#hero-title').textContent = profile.name;
