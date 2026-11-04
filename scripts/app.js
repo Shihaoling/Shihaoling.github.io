@@ -1,6 +1,7 @@
 import { profile } from './profile.js';
 import { initFootprints } from './footprints.js';
 import { initTheme } from './theme.js';
+import { initLiquidGlass } from './liquid.js';
 
 const $ = (selector) => document.querySelector(selector);
 const escape = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -70,7 +71,7 @@ $('#experience-tabs').innerHTML = profile.experiences.map((item, index) => `
     <span class="tab-company">${escape(item.company)}</span><span class="tab-period">${escape(item.period)}</span><span class="tab-arrow" aria-hidden="true">↗</span>
   </button>`).join('');
 $('#experience-panels').innerHTML = profile.experiences.map((item, index) => `
-  <article class="experience-panel" role="tabpanel" id="panel-${escape(item.id)}" aria-labelledby="tab-${escape(item.id)}" tabindex="0" ${index ? 'hidden' : ''}>
+  <article class="experience-panel liquid-surface liquid-card" role="tabpanel" id="panel-${escape(item.id)}" aria-labelledby="tab-${escape(item.id)}" tabindex="0" ${index ? 'hidden' : ''}>
     <p class="exp-period">${escape(item.period)}</p><h3>${escape(item.role)}</h3><p class="exp-department">${escape(item.fullName)} / ${escape(item.department)}</p>
     <h4 class="exp-summary">${escape(item.summary)}</h4><p class="exp-description">${escape(item.description)}</p>
     <ul class="exp-points">${item.points.map(point => `<li>${escape(point)}</li>`).join('')}</ul>${tags(item.tags)}
@@ -110,7 +111,7 @@ const artwork = {
 };
 
 $('#projects').innerHTML = profile.projects.map(project => `
-  <article class="project-card" data-category="${escape(project.category)}">
+  <article class="project-card liquid-surface liquid-card" data-category="${escape(project.category)}">
     <div class="project-art ${escape(project.visual)}">${artwork[project.visual] || artwork.network}<span class="art-label">${escape(project.type)} / 方法示意</span></div>
     <div class="project-body"><p class="project-context">${escape(project.context)}</p><h3>${escape(project.title)}</h3><p class="project-summary">${escape(project.summary)}</p>${tags(project.tags)}
     <button class="project-open" data-project="${escape(project.id)}" aria-haspopup="dialog" aria-label="了解项目：${escape(project.title)}"><span>查看详情</span><span aria-hidden="true">↗</span></button></div>
@@ -157,7 +158,7 @@ dialog.addEventListener('close', () => {
 const publishedPapers = profile.papers.filter(paper => paper.status === '已发表');
 $('#publications-summary').textContent = `已发表 ${publishedPapers.length} 篇 · 第一作者 ${publishedPapers.filter(paper => paper.role === '第一作者').length} 篇`;
 $('#papers').innerHTML = profile.papers.map((paper, index) => `
-  <article class="publication-card">
+  <article class="publication-card liquid-surface liquid-card">
     <span class="publication-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
     <div class="publication-body">
       <div class="publication-meta"><span>${escape(paper.year || '期刊论文')}</span><span class="publication-role">${escape(paper.role)}</span></div>
@@ -242,3 +243,4 @@ window.addEventListener('scroll', scheduleNav, { passive: true });
 window.addEventListener('resize', scheduleNav);
 window.addEventListener('pageshow', scheduleNav);
 updateActiveNav();
+initLiquidGlass();

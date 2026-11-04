@@ -1,0 +1,181 @@
+/* More visible liquid glass on broad panels, with readable content above the shine. */
+:root {
+  --liquid-solid: #f5fafb;
+  --liquid-clear: #f5fafbb8;
+  --liquid-card-solid: #f9fcfc;
+  --liquid-card-clear: #ffffffae;
+  --liquid-edge: #ffffffd9;
+  --liquid-glint: #ffffffdc;
+  --liquid-caustic: #8ebfcb8a;
+  --liquid-rim: #9ebdc864;
+  --liquid-shadow: #244d641c;
+}
+html[data-theme="dark"] {
+  --liquid-solid: #203a4a;
+  --liquid-clear: #1e394ac4;
+  --liquid-card-solid: #294656;
+  --liquid-card-clear: #305061ac;
+  --liquid-edge: #b6d5df6e;
+  --liquid-glint: #c6e7f987;
+  --liquid-caustic: #82b8d080;
+  --liquid-rim: #91bdcb43;
+  --liquid-shadow: #030d1880;
+}
+.content-surface {
+  background-image:
+    radial-gradient(ellipse at 12% 14%, #a5d3da38, transparent 28%),
+    radial-gradient(ellipse at 90% 67%, #a8d2c836, transparent 30%),
+    url('../assets/page-texture.svg'),
+    radial-gradient(#a8c0ca38 .7px, transparent .8px);
+  background-size: 100% 100%, 100% 100%, 1440px 960px, 24px 24px;
+  background-position: center, center, center top, center top;
+  background-repeat: no-repeat, no-repeat, repeat-y, repeat;
+}
+.site-header {
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+  backdrop-filter: blur(28px) saturate(1.6);
+  box-shadow: 0 8px 30px #254a601e, inset 0 1px #ffffff9e, inset 0 -1px #ffffff75;
+}
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: auto 6% 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #ffffffc2 24%, #ffffff39 70%, transparent);
+}
+html[data-theme="dark"] .site-header {
+  box-shadow: 0 9px 30px #020b146b, inset 0 1px #d4efff32, inset 0 -1px #add0dd21;
+}
+.liquid-surface {
+  --liquid-x: 18%;
+  --liquid-y: 0%;
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--liquid-edge);
+  border-radius: 24px;
+  background-color: var(--liquid-solid);
+  box-shadow: inset 0 1px #ffffffac, inset 1px 0 #ffffff6b, inset -1px -1px var(--liquid-rim), 0 19px 46px var(--liquid-shadow), 0 3px 10px #244d6410;
+  transition: background-color .85s ease, border-color .85s ease, box-shadow .45s ease;
+}
+.liquid-surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 330px 220px at var(--liquid-x) var(--liquid-y), var(--liquid-glint) 0%, #ffffff75 21%, var(--liquid-caustic) 42%, transparent 75%);
+  opacity: .38;
+  transform: none;
+  transition: opacity .35s ease;
+}
+html[data-theme="dark"] .liquid-surface::after {
+  background: radial-gradient(ellipse 330px 220px at var(--liquid-x) var(--liquid-y), var(--liquid-glint) 0%, #9fced656 21%, var(--liquid-caustic) 42%, transparent 75%);
+}
+.liquid-surface > * { position: relative; z-index: 1; }
+.liquid-surface:not(.profile-overview):not(.contact-inner)::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 9%;
+  width: 55%;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #fffffff0 33%, #ffffff33 76%, transparent);
+  opacity: .8;
+}
+.profile-overview.liquid-surface::after { top: 0; left: 0; right: 0; bottom: 0; }
+.profile-overview.liquid-surface:hover::after { transform: none; }
+.profile-avatar { box-shadow: 0 6px 20px #234a602b, inset 0 1px #fff; }
+.liquid-card { border-radius: 18px; background-color: var(--liquid-card-solid); }
+.publications-section.liquid-surface { background-color: #eaf5f0; }
+html[data-theme="dark"] .publications-section.liquid-surface { background-color: #1d3a42; }
+.experience-panel.liquid-card { padding: 22px 25px; min-height: 315px; }
+.travel-sidebar.liquid-card { padding: 18px 22px; margin-top: 20px; }
+.contact-inner.liquid-surface { padding-inline: 36px; margin-block: 28px; }
+.contact-section { background-image: radial-gradient(circle at 84% 26%, #b8dce073, transparent 32%); }
+html[data-theme="dark"] .contact-section { background-image: radial-gradient(circle at 84% 26%, #54879a38, transparent 35%); }
+.email-link { overflow-wrap: anywhere; }
+.profile-fact {
+  background-color: #ffffffb1;
+  border-color: #ffffffd6;
+  box-shadow: inset 0 1px #fff, inset -1px -1px #a8c4cc50, 0 7px 18px #315d6d18;
+}
+html[data-theme="dark"] .profile-fact {
+  background-color: #355768a9;
+  border-color: #9fc5d47a;
+  box-shadow: inset 0 1px #dff4ff42, inset -1px -1px #05121e4d, 0 8px 19px #03121d4d;
+}
+.profile-location, .internship-chips span, nav .nav-contact, .filters, .map-view-control {
+  border-color: #ffffffaf;
+  background-color: #ffffff96;
+  box-shadow: inset 0 1px #ffffffd9, 0 3px 12px #31586a12;
+}
+html[data-theme="dark"] .profile-location, html[data-theme="dark"] .internship-chips span, html[data-theme="dark"] nav .nav-contact, html[data-theme="dark"] .filters, html[data-theme="dark"] .map-view-control {
+  border-color: #9abdc869;
+  background-color: #3657689e;
+  box-shadow: inset 0 1px #e7f7ff2b, 0 3px 12px #02111d45;
+}
+.theme-toggle {
+  border-color: #ffffffd9;
+  box-shadow: inset 0 1px #fff, inset -1px -1px #b3cad258, 0 8px 22px #31586a27;
+}
+html[data-theme="dark"] .theme-toggle {
+  border-color: #a8ccda83;
+  box-shadow: inset 0 1px #e8f7ff4d, inset -1px -1px #0719258c, 0 8px 23px #02101c7a;
+}
+.experience-tab:not([aria-selected="true"]) { background-color: #ffffff52; border: 1px solid #ffffff81; }
+html[data-theme="dark"] .experience-tab:not([aria-selected="true"]) { background-color: #43647555; border-color: #7da2af3d; }
+.experience-tab[aria-selected="true"] { box-shadow: inset 0 1px #d4f1fb72, 0 8px 20px #1d405526; }
+.map-scroll { border-radius: 14px; border-color: #ffffffb7; box-shadow: inset 0 1px #fff, 0 7px 20px #31586a13; }
+html[data-theme="dark"] .map-scroll { border-color: #7da5b173; box-shadow: inset 0 1px #cbe8f02b, 0 7px 20px #03121d48; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid-surface {
+    background-color: var(--liquid-clear);
+    -webkit-backdrop-filter: blur(22px) saturate(1.45);
+    backdrop-filter: blur(22px) saturate(1.45);
+  }
+  html[data-theme="dark"] .liquid-surface { background-color: var(--liquid-clear); }
+  .liquid-card {
+    background-color: var(--liquid-card-clear);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html[data-theme="dark"] .liquid-card { background-color: var(--liquid-card-clear); }
+  .experience-panel.liquid-card { -webkit-backdrop-filter: blur(14px) saturate(1.25); backdrop-filter: blur(14px) saturate(1.25); }
+  .publications-section.liquid-surface { background-color: #eaf5f0bc; }
+  html[data-theme="dark"] .publications-section.liquid-surface { background-color: #1d3a42c4; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .liquid-surface:hover::after, .liquid-surface:focus-within::after { opacity: .74; }
+  .liquid-card:hover { box-shadow: inset 0 1px #fff, inset -1px -1px var(--liquid-rim), 0 20px 42px var(--liquid-shadow); }
+}
+@media (max-width: 800px) {
+  .site-header nav { -webkit-backdrop-filter: blur(22px) saturate(1.35); backdrop-filter: blur(22px) saturate(1.35); box-shadow: 0 14px 30px #1a3c501e, inset 0 1px #fff8; }
+  html[data-theme="dark"] .site-header nav { box-shadow: 0 14px 30px #020b1469, inset 0 1px #d7efff22; }
+}
+@media (max-width: 600px) {
+  .liquid-surface { border-radius: 17px; }
+  .liquid-card { border-radius: 14px; }
+  .experience-panel.liquid-card { padding: 18px; min-height: 0; }
+  .travel-sidebar.liquid-card { padding: 14px 15px; }
+  .contact-inner.liquid-surface { padding-inline: 18px; margin-block: 18px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-surface, html[data-theme="dark"] .liquid-surface { background-color: var(--liquid-solid) !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .liquid-card, html[data-theme="dark"] .liquid-card { background-color: var(--liquid-card-solid) !important; }
+  .liquid-surface::after, .liquid-surface::before { display: none !important; }
+  .site-header nav, .site-header { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-surface, .liquid-surface::after { transition: none !important; }
+  .liquid-surface::after { display: none; }
+}
+@media print {
+  .liquid-surface, html[data-theme="dark"] .liquid-surface, .liquid-card, html[data-theme="dark"] .liquid-card { background: #fff !important; color: #182e46 !important; box-shadow: none !important; border-color: #ccd4d8 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .liquid-surface::before, .liquid-surface::after, .site-header::after { display: none !important; }
+}

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="./styles/refinements.css">
   <link rel="stylesheet" href="./styles/sections.css">
   <link rel="stylesheet" href="./styles/theme.css">
+  <link rel="stylesheet" href="./styles/liquid.css">
   <script type="module" src="./scripts/app.js"></script>
 </head>
 <body>
@@ -44,7 +45,7 @@
         <g class="sky-day"><circle class="sky-halo" cx="80" cy="80" r="55"/><circle class="sky-sun" cx="80" cy="80" r="25"/><path class="sky-rays" d="M80 15v21M80 124v21M15 80h21M124 80h21M34 34l15 15M111 111l15 15M126 34l-15 15M49 111l-15 15"/></g>
         <g class="sky-night"><circle class="sky-moon-halo" cx="83" cy="78" r="54"/><path class="sky-moon" d="M99 47a36 36 0 1 0 18 62 37 37 0 0 1-18-62Z"/><path class="sky-stars" d="M42 31v14M35 38h14M126 55v11M120.5 60.5h11M42 115v8M38 119h8"/><circle class="sky-small-star" cx="123" cy="119" r="2"/></g>
       </svg>
-      <div class="profile-overview">
+      <div class="profile-overview liquid-surface">
         <div class="identity-row"><div><p class="profile-english" id="hero-english">Haoling Shi</p><h1 id="hero-title">史昊灵</h1></div><div class="profile-avatar"><img src="./assets/portrait.webp" width="1400" height="1867" alt="史昊灵的生活照"></div></div>
         <div class="profile-meta"><p class="profile-role">管理科学与工程 · 硕士在读</p><p class="profile-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="hero-location">目前常驻长沙</span></p></div>
         <dl class="profile-facts" id="hero-facts"></dl>
@@ -54,7 +55,7 @@
       <a href="#education" class="scroll-cue"><span class="scroll-line"></span> 向下查看 <span aria-hidden="true">↓</span></a>
     </section>
     <div class="content-surface">
-      <section class="education-section section-wrap" id="education" aria-labelledby="education-title">
+      <section class="education-section section-wrap liquid-surface" id="education" aria-labelledby="education-title">
         <div class="section-heading"><div><p class="section-kicker">EDUCATION</p><h2 id="education-title">教育背景</h2></div></div>
         <div class="education-grid" id="education-list"></div>
         <div class="honors-strip"><span class="honors-label">荣誉与奖项</span><div id="honors"></div></div>
@@ -63,27 +64,27 @@
         <div class="section-heading"><div><p class="section-kicker">EXPERIENCE</p><h2 id="experience-title">实习经历</h2></div></div>
         <div class="experience-layout"><div class="experience-tabs" role="tablist" aria-label="选择实习经历" aria-orientation="vertical" id="experience-tabs"></div><div id="experience-panels"></div></div>
       </div></section>
-      <section class="work-section section-wrap" id="work" aria-labelledby="work-title">
+      <section class="work-section section-wrap liquid-surface" id="work" aria-labelledby="work-title">
         <div class="section-heading"><div><p class="section-kicker">PROJECTS</p><h2 id="work-title">项目经历</h2></div><div class="filters" role="group" aria-label="筛选项目"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="industry" aria-pressed="false">实习项目</button><button data-filter="research" aria-pressed="false">科研项目</button></div></div>
         <div class="projects-grid" id="projects"></div><p class="sr-only" id="filter-status" aria-live="polite"></p>
       </section>
-      <section class="publications-section section-wrap" id="publications" aria-labelledby="publications-title">
+      <section class="publications-section section-wrap liquid-surface" id="publications" aria-labelledby="publications-title">
         <div class="section-heading"><div><p class="section-kicker">PUBLICATIONS</p><h2 id="publications-title">论文发表</h2></div><p id="publications-summary"></p></div>
         <div class="publications-list" id="papers"></div>
         <p class="publications-metric-note">期刊指标按 2025 年中科院大类分区及 2025 年 JCR 数据标注，具体可查看 <a href="https://xrxueshu.com/journal/0307-904X/applied-mathematical-modelling" target="_blank" rel="noopener noreferrer">AMM</a>、<a href="https://xrxueshu.com/journal/0957-4174/expert-systems-with-applications" target="_blank" rel="noopener noreferrer">ESWA</a> 的期刊记录。</p>
       </section>
-      <section class="perspective-section section-wrap ruled" id="perspective" aria-labelledby="perspective-title">
+      <section class="perspective-section section-wrap ruled liquid-surface" id="perspective" aria-labelledby="perspective-title">
         <div class="section-heading"><div><p class="section-kicker">SKILLS & ACTIVITIES</p><h2 id="perspective-title">技能与其他</h2></div></div>
         <div class="perspective-grid"><figure class="life-photo"><img src="./assets/city.webp" width="1000" height="1333" loading="lazy" alt="史昊灵在城市夜景前的生活照"></figure><div class="skills-area"><div id="skills"></div><p class="activities-note">曾参与学生组织工作，并担任学生大使，参与美方教授接待。</p></div></div>
       </section>
-      <section class="travel-section section-wrap ruled" id="travel" aria-labelledby="travel-title">
+      <section class="travel-section section-wrap ruled liquid-surface" id="travel" aria-labelledby="travel-title">
         <div class="section-heading"><div><p class="section-kicker">TRAVEL</p><h2 id="travel-title">足迹</h2></div><p id="travel-summary">常驻中国大陆 · 到访过 7 个国家或地区</p></div>
-        <div class="travel-layout"><div id="travel-map"></div><aside class="travel-sidebar" aria-label="访问记录"><div id="travel-detail" aria-live="polite"></div><div id="travel-list"></div></aside></div>
+        <div class="travel-layout"><div id="travel-map"></div><aside class="travel-sidebar liquid-surface liquid-card" aria-label="访问记录"><div id="travel-detail" aria-live="polite"></div><div id="travel-list"></div></aside></div>
         <p class="travel-note">悬停或点击国家、标记和地点列表，可查看完整区域及记录；较小地区使用标记表示。</p>
         <p class="travel-map-caption">地图资料：<a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a> · <a href="https://geojson.cn/data/atlas/tiandi" target="_blank" rel="noopener noreferrer">GeoJSON.CN（天地图来源）</a> · <a href="https://fdi.swt.fujian.gov.cn/uploadfiles/file/20240904/1725417261979732.pdf#page=26" target="_blank" rel="noopener noreferrer">中国标准样图参考</a></p>
       </section>
-      <section class="notes-section section-wrap ruled" id="notes" aria-labelledby="notes-title" hidden><div class="section-heading"><div><p class="section-kicker">NOTES</p><h2 id="notes-title">记录</h2></div></div><div id="notes-list"></div></section>
-      <section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="section-wrap contact-inner"><div><p class="section-kicker">CONTACT</p><h2 id="contact-title">联系我</h2><p>可通过邮件联系。</p></div><div class="contact-details"><a id="email-link" class="email-link"></a><div class="contact-options"><button id="copy-email">复制邮箱 <span aria-hidden="true">⧉</span></button><span class="contact-divider"></span><span id="github-slot" class="pending-link">GitHub · 待补充</span></div><div id="resume-slot"></div><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p></div></div></section>
+      <section class="notes-section section-wrap ruled liquid-surface" id="notes" aria-labelledby="notes-title" hidden><div class="section-heading"><div><p class="section-kicker">NOTES</p><h2 id="notes-title">记录</h2></div></div><div id="notes-list"></div></section>
+      <section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="section-wrap contact-inner liquid-surface"><div><p class="section-kicker">CONTACT</p><h2 id="contact-title">联系我</h2><p>可通过邮件联系。</p></div><div class="contact-details"><a id="email-link" class="email-link"></a><div class="contact-options"><button id="copy-email">复制邮箱 <span aria-hidden="true">⧉</span></button><span class="contact-divider"></span><span id="github-slot" class="pending-link">GitHub · 待补充</span></div><div id="resume-slot"></div><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p></div></div></section>
       <footer class="site-footer section-wrap"><a href="#home" class="footer-name">史昊灵 <span>/ Haoling Shi</span></a><span>更新于 <span id="updated"></span></span><a href="#home" class="back-top">回到顶部 ↑</a></footer>
     </div>
   </main>
