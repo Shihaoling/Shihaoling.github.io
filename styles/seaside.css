@@ -1,0 +1,74 @@
+/* An open patch of sea beside the profile; all motion is brief and optional. */
+.ocean-scene { position: absolute; inset: 0 0 auto; height: var(--seaside-height, 100svh); }
+.ocean-hero.has-seaside { display: grid; grid-template-columns: minmax(0, 670px) minmax(230px, 1fr); gap: 32px; }
+.seaside { position: relative; align-self: stretch; min-height: 450px; isolation: isolate; }
+.seaside-stage { position: absolute; inset: 0; overflow: hidden; border-radius: 18px; pointer-events: none; }
+.seaside-sky { position: absolute; inset: 17% 0 32%; overflow: hidden; }
+.sky-touch { position: absolute; top: 2%; right: 7%; width: 126px; height: 156px; padding: 0; background: none; border-radius: 60px; color: #365566; }
+.sky-touch .sky-decor { display: block; position: static; width: 126px; height: 126px; opacity: .95; transition: transform .8s ease; }
+.sky-hint { display: block; margin-top: -9px; font: 11px/1.6 var(--sans); letter-spacing: .08em; opacity: .85; transition: opacity .2s; }
+.sky-touch:hover .sky-decor, .sky-touch.is-awake .sky-decor { transform: translateY(-4px) rotate(7deg); }
+.sky-touch:hover .sky-hint { opacity: 1; }
+.seaside-water { position: absolute; top: 60%; left: 0; width: 100%; height: 110px; --wind: 0px; }
+.water-lines { width: 110%; height: 100%; color: #fff; opacity: .32; transform: translateX(var(--wind)); transition: transform 1.4s ease, opacity 1s ease; }
+.seaside-water.is-stirred .water-lines { opacity: .65; }
+.boat-lane { position: absolute; inset: 0; }
+.paper-boat { position: absolute; left: 8%; top: calc(26% + var(--boat-offset, 0px)); width: 64px; animation: sail-away 7.2s cubic-bezier(.22,.55,.46,1) both; }
+.boat-rock { display: block; position: relative; z-index: 1; animation: boat-rock 2.2s ease-in-out infinite; }
+.boat-rock svg { width: 100%; height: auto; filter: drop-shadow(0 6px 5px #193e4c26); }
+.boat-wake { position: absolute; height: 8px; width: 100px; right: 58px; bottom: -3px; border-top: 1px solid #ffffff70; border-bottom: 1px solid #ffffff40; border-radius: 50%; transform: scaleX(.8); }
+.paper-boat.is-still { left: 47%; animation: none; }
+.paper-boat.is-still .boat-rock { animation: none; }
+.seaside-dock { position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.seaside-caption { color: #35596a; font-size: 11px; letter-spacing: .12em; margin-bottom: 13px; }
+.seaside-caption > span:first-child { margin-inline: 7px; opacity: .45; }
+.launch-boat { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 9px 18px; border: 1px solid #ffffffc9; border-radius: 999px; background: #edf7f9ab; color: #305363; box-shadow: inset 0 1px #fff, 0 7px 22px #23475b12; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 12px; transition: background-color .3s, transform .3s; }
+.launch-boat svg { width: 23px; height: 23px; transition: transform .3s; }
+.launch-boat:hover svg { transform: rotate(-8deg) translateY(-2px); }
+.launch-boat:active { transform: scale(.97); }
+.launch-boat[aria-disabled="true"] { cursor: default; }
+.seaside-status { min-height: 36px; margin-top: 12px; max-width: 270px; padding-inline: 6px; color: #395c6b; font-size: 11px; line-height: 1.8; }
+.seabirds { position: absolute; width: 150px; color: #f4fcff; filter: drop-shadow(0 1px 1px #326076); animation: birds-pass 4s ease-in-out both; }
+.seabirds svg { width: 100%; }
+.seabirds.is-still { left: 20%; top: 28%; animation: none; }
+.meteor-shower { position: absolute; inset: 0; }
+.meteor-shower i { position: absolute; left: 65%; top: 10%; height: 1px; width: 110px; background: linear-gradient(90deg, transparent, #e5f2ff); box-shadow: 0 0 8px #d9f1ff66; animation: meteor-pass 2.2s ease-out both; }
+.meteor-shower i + i { left: 80%; top: 22%; width: 65px; animation-delay: .65s; }
+.meteor-shower svg { width: 100%; }
+html[data-theme="dark"] .sky-touch, html[data-theme="dark"] .seaside-caption, html[data-theme="dark"] .seaside-status { color: #d2e4ed; }
+html[data-theme="dark"] .launch-boat { background: #233c50a8; color: #e3f0f5; border-color: #bcdbe96b; box-shadow: inset 0 1px #e2f4ff35, 0 8px 24px #05101e22; }
+html[data-theme="dark"] .water-lines { color: #c0e7ff; opacity: .24; }
+html[data-theme="dark"] .seaside-water.is-stirred .water-lines { opacity: .5; }
+html[data-theme="dark"] .paper-boat { filter: brightness(.9) drop-shadow(0 0 8px #b9e4ed30); }
+@keyframes sail-away { 0% { left: 8%; opacity: 0; transform: scale(.88); } 12% { opacity: 1; } 80% { opacity: 1; } 100% { left: 76%; opacity: 0; transform: scale(.67) translateY(-16px); } }
+@keyframes boat-rock { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(3px) rotate(3deg); } }
+@keyframes birds-pass { 0% { left: -45%; top: 42%; opacity: 0; } 15%,75% { opacity: 1; } 100% { left: 100%; top: 12%; opacity: 0; } }
+@keyframes meteor-pass { 0% { opacity: 0; transform: translate(80px,-40px) rotate(-32deg); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(-270px,160px) rotate(-32deg); } }
+@media (max-width: 1000px) {
+  .ocean-hero.has-seaside { grid-template-columns: minmax(0, 1fr) 220px; gap: 22px; }
+  .seaside { min-height: 440px; }
+  .seaside-status { max-width: 210px; }
+}
+@media (max-width: 800px) {
+  .ocean-hero.has-seaside { grid-template-columns: 1fr; gap: 10px; }
+  .ocean-hero.has-seaside .profile-overview { max-width: none; }
+  .seaside { min-height: 220px; }
+  .seaside-water { top: 26%; left: 0; width: calc(100% - 100px); height: 70px; }
+  .sky-touch { width: 90px; height: 108px; right: 0; top: -2px; }
+  .sky-touch .sky-decor { width: 90px; height: 90px; }
+  .sky-hint { font-size: 10px; margin-top: -4px; }
+  .seaside-sky { inset: 0 20% 42% 0; }
+  .seaside-dock { bottom: 3px; }
+  .seaside-caption { margin-bottom: 7px; }
+  .seaside-status { margin-top: 7px; min-height: 20px; max-width: none; }
+  .paper-boat { width: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seaside *, .seaside *::before, .seaside *::after { animation: none !important; transition: none !important; }
+  .sky-touch:hover .sky-decor { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .launch-boat { background: #edf7f9; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  html[data-theme="dark"] .launch-boat { background: #233c50; }
+}
+@media print { .seaside { display: none !important; } .ocean-hero.has-seaside { display: block; } }

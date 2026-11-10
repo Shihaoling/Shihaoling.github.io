@@ -1,7 +1,8 @@
 import { profile } from './profile.js';
-import { initFootprints } from './footprints.js';
+import { initFootprints } from './footprints.js?v=20261110';
 import { initTheme } from './theme.js';
 import { initLiquidGlass } from './liquid.js';
+import { initSeaside } from './seaside.js';
 
 const $ = (selector) => document.querySelector(selector);
 const escape = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -244,3 +245,5 @@ window.addEventListener('resize', scheduleNav);
 window.addEventListener('pageshow', scheduleNav);
 updateActiveNav();
 initLiquidGlass();
+initSeaside();
+scheduleOcean();

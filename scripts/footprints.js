@@ -50,8 +50,17 @@ export function initFootprints(travel) {
   const markers = new Map();
   const countryNodes = new Map();
   const buttons = new Map();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Dates remain display data; sort by the first year and month, preserving ties.
+  const visitOrder = records.filter(entry => entry.status === 'visited').sort((a, b) => {
+    const value = entry => { const parts = String(entry.date).match(/\d+/g) || []; return Number(parts[0] || 0) * 12 + Number(parts[1] || 0); };
+    return value(a) - value(b);
+  });
   let currentView = 'world';
   let selected = records[0];
+  let replayIndex = -1;
+  let replayTimer;
+  let replayPlaying = false;
   host.replaceChildren(); list.replaceChildren();
   host.classList.add('map-host'); detail.classList.add('travel-detail'); list.classList.add('travel-list');
 
@@ -69,10 +78,27 @@ export function initFootprints(travel) {
     const button = element('button', 'map-view-button', label);
     button.type = 'button'; button.dataset.mapView = view;
     button.setAttribute('aria-pressed', String(view === currentView));
-    button.addEventListener('click', () => setView(view));
+    button.addEventListener('click', () => { stopReplay(); setView(view); });
     viewControl.append(button); viewButtons.set(view, button);
   }
   toolbar.append(legend, viewControl); host.append(toolbar);
+  const replay = element('div', 'map-replay');
+  replay.hidden = !visitOrder.length;
+  const replayButton = element('button', 'map-replay-button');
+  replayButton.type = 'button';
+  replayButton.setAttribute('aria-controls', 'travel-map travel-detail');
+  const replayIcon = element('span', 'map-replay-icon', '▷'); replayIcon.setAttribute('aria-hidden', 'true');
+  const replayLabel = element('span', '', '回看足迹');
+  replayButton.append(replayIcon, replayLabel);
+  const replayCaption = element('div', 'map-replay-caption');
+  const replayPlace = element('span', 'map-replay-place');
+  const replayDate = element('span', 'map-replay-date');
+  replayCaption.append(replayPlace, replayDate);
+  const replayProgress = element('div', 'map-replay-progress'); replayProgress.setAttribute('aria-hidden', 'true');
+  visitOrder.forEach(() => replayProgress.append(element('span', '')));
+  const replayStop = element('button', 'map-replay-stop', '结束'); replayStop.type = 'button'; replayStop.hidden = true;
+  replayStop.setAttribute('aria-label', '结束足迹回看');
+  replay.append(replayButton, replayCaption, replayProgress, replayStop); host.append(replay);
   const scroll = element('div', 'map-scroll');
   scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', '足迹地图，可横向滚动；下方收藏栏可展开选择地点。'); scroll.tabIndex = 0;
   const canvas = element('div', 'map-canvas');
@@ -120,14 +146,18 @@ export function initFootprints(travel) {
     showDetail(entry);
     if (withTooltip && isVisible(entry)) showTooltip(entry); else tooltip.hidden = true;
   }
+  function manualActivate(entry) {
+    stopReplay();
+    activate(entry, true);
+  }
   function attachInteraction(node, entry) {
-    node.addEventListener('pointerenter', () => activate(entry, true));
-    node.addEventListener('focus', () => activate(entry, true));
-    node.addEventListener('click', () => activate(entry, true));
+    node.addEventListener('pointerenter', () => manualActivate(entry));
+    node.addEventListener('focus', () => manualActivate(entry));
+    node.addEventListener('click', () => manualActivate(entry));
     node.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse' && document.activeElement !== node) tooltip.hidden = true; });
     node.addEventListener('blur', () => { tooltip.hidden = true; });
     node.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(entry, true); }
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); manualActivate(entry); }
       if (event.key === 'Escape') tooltip.hidden = true;
     });
   }
@@ -177,6 +207,7 @@ export function initFootprints(travel) {
     if (view === 'europe') scroll.scrollLeft = (scroll.scrollWidth - scroll.clientWidth) / 2;
   }
   function selectFromList(entry) {
+    stopReplay();
     const view = EUROPE_CODES.has(entry.countryCode) ? 'europe' : 'world';
     if (currentView !== view) setView(view);
     activate(entry, true);
@@ -185,6 +216,94 @@ export function initFootprints(travel) {
       scroll.scrollTo({ left: x / 1000 * canvas.clientWidth - scroll.clientWidth / 2, behavior: 'auto' });
     }
   }
+
+  function updateReplay() {
+    const entry = visitOrder[replayIndex];
+    const complete = replayIndex === visitOrder.length - 1;
+    const label = reducedMotion.matches
+      ? (replayIndex < 0 ? '逐站回看' : complete ? '重新回看' : '下一站')
+      : (replayPlaying ? '暂停回看' : replayIndex < 0 ? '回看足迹' : complete ? '重新回看' : '继续回看');
+    replayLabel.textContent = label;
+    replayIcon.textContent = replayPlaying ? 'Ⅱ' : '▷';
+    replayButton.setAttribute('aria-label', label);
+    replayButton.setAttribute('aria-pressed', String(replayPlaying));
+    replayPlace.textContent = entry ? entry.name : `${visitOrder.length} 段足迹`;
+    const firstYear = String(visitOrder[0]?.date || '').match(/\d{4}/)?.[0];
+    const lastYear = String(visitOrder.at(-1)?.date || '').match(/\d{4}/)?.[0];
+    replayDate.textContent = entry ? `${entry.date} · ${replayIndex + 1}/${visitOrder.length}` : [firstYear, lastYear].filter(Boolean).join(' — ');
+    [...replayProgress.children].forEach((node, index) => {
+      node.classList.toggle('is-past', index < replayIndex);
+      node.classList.toggle('is-current', index === replayIndex);
+    });
+    replay.classList.toggle('is-playing', replayPlaying);
+    host.classList.toggle('is-replaying', replayIndex >= 0);
+    replayStop.hidden = replayIndex < 0;
+  }
+  function pauseReplay() {
+    clearTimeout(replayTimer);
+    replayPlaying = false;
+    updateReplay();
+  }
+  function stopReplay() {
+    clearTimeout(replayTimer);
+    replayPlaying = false;
+    replayIndex = -1;
+    updateReplay();
+  }
+  function showReplayEntry() {
+    const entry = visitOrder[replayIndex];
+    if (!entry) return;
+    const view = EUROPE_CODES.has(entry.countryCode) ? 'europe' : 'world';
+    if (currentView !== view) setView(view);
+    // Keep the current destination visible on narrow screens; the country itself
+    // is highlighted without suggesting a flight path or a precise visited city.
+    if (scroll.scrollWidth > scroll.clientWidth) {
+      const [x] = mapPoint(entry);
+      scroll.scrollLeft = x / WORLD.width * canvas.clientWidth - scroll.clientWidth / 2;
+    }
+    activate(entry, true);
+    updateReplay();
+  }
+  function queueReplay() {
+    clearTimeout(replayTimer);
+    replayTimer = setTimeout(() => {
+      if (!replayPlaying) return;
+      if (replayIndex >= visitOrder.length - 1) { pauseReplay(); return; }
+      replayIndex++;
+      showReplayEntry();
+      queueReplay();
+    }, 2800);
+  }
+  replayButton.addEventListener('click', () => {
+    if (!visitOrder.length) return;
+    if (reducedMotion.matches) {
+      pauseReplay();
+      replayIndex = (replayIndex + 1) % visitOrder.length;
+      showReplayEntry();
+    } else if (replayPlaying) {
+      pauseReplay();
+    } else {
+      if (replayIndex < 0 || replayIndex === visitOrder.length - 1) replayIndex = 0;
+      replayPlaying = true;
+      showReplayEntry();
+      queueReplay();
+    }
+  });
+  replayStop.addEventListener('click', () => {
+    stopReplay();
+    tooltip.hidden = true;
+    replayButton.focus();
+  });
+  reducedMotion.addEventListener('change', pauseReplay);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pauseReplay(); });
+  window.addEventListener('pagehide', pauseReplay);
+  window.addEventListener('blur', pauseReplay);
+  window.addEventListener('hashchange', () => { if (location.hash !== '#travel') pauseReplay(); });
+  const replayVisibility = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) pauseReplay();
+  }, { threshold: 0 });
+  replayVisibility.observe(host);
+  updateReplay();
   for (const [status, title] of [['visited', '去过'], ['wishlist', '想去']]) {
     const entries = records.filter(entry => entry.status === status);
     if (!entries.length) continue;
