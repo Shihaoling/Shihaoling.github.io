@@ -9,8 +9,6 @@
   <title>史昊灵 Haoling Shi · 个人主页</title>
   <script>(() => { const now = new Date(); const hour = now.getHours(); let mode = hour >= 6 && hour < 18 ? 'light' : 'dark'; try { const saved = JSON.parse(localStorage.getItem('haoling-theme-override-v2') || 'null'); const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; if ((saved?.mode === 'light' || saved?.mode === 'dark') && saved.until > now.getTime() && saved.zone === zone) mode = saved.mode; } catch {} document.documentElement.dataset.theme = mode; })();</script>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
-  <link rel="preload" as="image" href="./assets/ocean.webp">
-  <link rel="preload" as="image" href="./assets/ocean-night-v2.jpg">
   <link rel="stylesheet" href="./styles/main.css">
   <link rel="stylesheet" href="./styles/ocean.css">
   <link rel="stylesheet" href="./styles/footprints.css?v=20261110">
@@ -18,8 +16,8 @@
   <link rel="stylesheet" href="./styles/sections.css">
   <link rel="stylesheet" href="./styles/theme.css">
   <link rel="stylesheet" href="./styles/liquid.css">
-  <link rel="stylesheet" href="./styles/seaside.css?v=20261110">
-  <script type="module" src="./scripts/app.js?v=20261110"></script>
+  <link rel="stylesheet" href="./styles/seaside.css?v=20261110-sea2">
+  <script type="module" src="./scripts/app.js?v=20261110-sea2"></script>
 </head>
 <body>
   <div class="ocean-scene" aria-hidden="true"></div>
@@ -50,21 +48,12 @@
         <div class="hero-actions"><a class="button button-primary" href="#experience">查看经历 <span aria-hidden="true">↓</span></a><a class="text-link" href="#contact">联系我 <span aria-hidden="true">↗</span></a></div>
       </div>
       <aside class="seaside" aria-label="海边小互动" hidden>
-        <div class="seaside-stage" aria-hidden="true">
-          <div class="seaside-sky"></div>
-          <div class="seaside-water">
-            <svg class="water-lines" viewBox="0 0 400 160" preserveAspectRatio="none"><g fill="none" stroke="currentColor" stroke-width=".8"><path d="M15 55Q65 46 115 55T215 55T315 55T415 55"/><path d="M-40 88Q10 79 60 88T160 88T260 88T360 88"/><path d="M30 123Q85 114 140 123T250 123T360 123"/></g></svg>
-            <div class="boat-lane"></div>
-          </div>
-        </div>
-        <button class="sky-touch" type="button" aria-label="看看天空"><svg class="sky-decor" viewBox="0 0 160 160" aria-hidden="true" focusable="false">
-        <g class="sky-day"><circle class="sky-halo" cx="80" cy="80" r="55"/><circle class="sky-sun" cx="80" cy="80" r="25"/><path class="sky-rays" d="M80 15v21M80 124v21M15 80h21M124 80h21M34 34l15 15M111 111l15 15M126 34l-15 15M49 111l-15 15"/></g>
-        <g class="sky-night"><circle class="sky-moon-halo" cx="83" cy="78" r="54"/><path class="sky-moon" d="M99 47a36 36 0 1 0 18 62 37 37 0 0 1-18-62Z"/><path class="sky-stars" d="M42 31v14M35 38h14M126 55v11M120.5 60.5h11M42 115v8M38 119h8"/><circle class="sky-small-star" cx="123" cy="119" r="2"/></g>
-      </svg><span class="sky-hint">点一下天空</span></button>
+        <button class="sky-touch" type="button" aria-label="看看天空"><span class="sky-hint">点一下天空</span></button>
         <div class="seaside-dock">
           <span class="seaside-caption">海边片刻 <span aria-hidden="true">/</span> <span id="seaside-time">白天</span></span>
           <button class="launch-boat" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="m3 14 9-10 9 10-5 6H8Z"/><path d="m3 14 9 3 9-3M12 4v13M7 10h10"/></svg><span>放一只纸船</span><span aria-hidden="true">↗</span></button>
-          <p class="seaside-status" id="seaside-status" role="status" aria-live="polite">试着放一只，再点点太阳或月亮。</p>
+          <p class="seaside-status" id="seaside-status" role="status" aria-live="polite">靠近小船，轻轻打个招呼。</p>
+          <button class="sea-motion" type="button" aria-pressed="false" aria-label="暂停海面动画"><span aria-hidden="true">Ⅱ</span><span class="sea-motion-label">暂停海面</span></button>
         </div>
       </aside>
       <a href="#education" class="scroll-cue"><span class="scroll-line"></span> 向下查看 <span aria-hidden="true">↓</span></a>
