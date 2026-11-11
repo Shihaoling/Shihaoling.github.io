@@ -1,4 +1,6 @@
-import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-sky';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-living';
+import { createSkyEvent } from './sky-effects.js?v=20261111-living';
+import { spaceBoats } from './boat-spacing.js?v=20261111-living';
 
 // The water, light and boats are painted together in one coordinate system.
 export function initSeaside() {
@@ -29,7 +31,6 @@ export function initSeaside() {
   let skyEvent = null;
   let skyClearTimer = 0;
   let skyCooldownUntil = 0;
-  const skyDuration = 6.5;
   const boatLifetime = 30;
   let paused = false;
   let visible = true;
@@ -78,13 +79,14 @@ export function initSeaside() {
   }
   function boatPos(boat) {
     const age = time - boat.born;
-    const fraction = boat.resting ? .45 + Math.sin(time * .26) * .10 : .10 + clamp(age / boatLifetime, 0, 1) * .79;
+    const drift = clamp(age / boatLifetime, 0, 1) * .16;
+    const fraction = boat.resting ? .45 + Math.sin(time * .26) * .10 : boat.side === 'left' ? .13 + drift : .87 - drift;
     return { x: layout.left + layout.widthOfScene * fraction, y: layout.waterline + (boat.resting ? 0 : 12 + (boat.id % 2) * 12), age };
   }
   function render(dt) {
     if (!layout) return;
     const animated = canAnimate();
-    const drawn = boats.map(boat => {
+    const drawn = spaceBoats(boats.map(boat => {
       const p = boatPos(boat);
       const wave = sampleWave(p.x, p.y, time, layout.horizon, layout.height);
       let targetX = 0, targetY = 0, targetTilt = 0;
@@ -105,20 +107,29 @@ export function initSeaside() {
         boat.tilt += (targetTilt - boat.tilt) * Math.min(1, dt * 3);
       }
       return {
-        x: p.x + boat.dx, y: p.y + wave.lift + boat.dy,
+        side: boat.side, x: p.x + boat.dx, y: p.y + wave.lift + boat.dy,
         scale: layout.scale * (boat.resting ? 1 : .83),
         roll: wave.roll + boat.tilt,
         opacity: boat.resting || !animated ? 1 : Math.min(1, p.age / 1.2, (boatLifetime - p.age) / 3), phase: boat.id * 2,
       };
-    });
-    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { kind: skyEvent.kind, progress: animated ? clamp((time - skyEvent.born) / skyDuration, 0, 1) : .42 } : null });
+    }), layout.left, layout.widthOfScene);
+    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { ...skyEvent, progress: animated ? clamp((time - skyEvent.born) / skyEvent.duration, 0, 1) : .42 } : null });
     // DOM-facing state also makes lifecycle and interaction regression checks possible.
     canvas.dataset.boats = String(drawn.length);
+    canvas.dataset.boatGap = drawn.length > 1 ? (Math.abs(drawn[1].x - drawn[0].x) - 42 * (drawn[0].scale + drawn[1].scale)).toFixed(1) : '';
+    canvas.dataset.boatPositions = drawn.map(b => `${b.x.toFixed(1)},${b.y.toFixed(1)}`).join(';');
+    const occupied = boats.length > 1;
+    boatButton.setAttribute('aria-disabled', String(occupied));
+    const launchLabel = boatButton.querySelector('.launch-boat-label');
+    if (launchLabel) launchLabel.textContent = occupied ? '小船漂流中' : '放一只纸船';
     canvas.dataset.motion = animated && canRun() ? 'running' : 'still';
     canvas.dataset.reaction = String(drawn.some((_, i) => Math.abs(boats[i].dx) > .2 || Math.abs(boats[i].tilt) > .003));
     canvas.dataset.frame = String(Math.round(time * 30));
     canvas.dataset.sky = skyEvent?.kind || '';
-    canvas.dataset.skyProgress = skyEvent ? (animated ? clamp((time - skyEvent.born) / skyDuration, 0, 1) : .42).toFixed(3) : '';
+    canvas.dataset.skyVisitors = skyEvent ? String(skyEvent.birds?.length || skyEvent.meteors?.length || 0) : '';
+    canvas.dataset.skyPattern = skyEvent?.patternId || '';
+    canvas.dataset.constellations = String(skyEvent?.constellations?.length || 0);
+    canvas.dataset.skyProgress = skyEvent ? (animated ? clamp((time - skyEvent.born) / skyEvent.duration, 0, 1) : .42).toFixed(3) : '';
     scene.classList.toggle('is-playing', !!skyEvent);
     const cycle = getCelestialCycle(night, layout.horizon, layout.celestial, layout.width);
     canvas.dataset.phase = night.toFixed(4);
@@ -140,7 +151,7 @@ export function initSeaside() {
     if (canAnimate()) {
       time += dt;
       for (let i = boats.length - 1; i > 0; i--) if (time - boats[i].born >= boatLifetime) boats.splice(i, 1);
-      if (skyEvent && time - skyEvent.born >= skyDuration) skyEvent = null;
+      if (skyEvent && time - skyEvent.born >= skyEvent.duration) clearSky();
     }
     if (reduced.matches) { night = targetNight; themeJourney = null; }
     else if (themeJourney) {
@@ -157,6 +168,12 @@ export function initSeaside() {
   function schedule() {
     if (!frame && canRun() && (canAnimate() || night !== targetNight)) frame = requestAnimationFrame(tick);
   }
+  function armStaticSkyExpiry() {
+    clearTimeout(skyClearTimer); skyClearTimer = 0;
+    // Animated visitors leave using the animation clock, even on slower screens.
+    // Only a frozen preview needs a wall-clock timeout.
+    if (skyEvent && !canAnimate()) skyClearTimer = setTimeout(() => { clearSky(); render(0); }, (skyEvent.duration + .3) * 1000);
+  }
   function clearSky() {
     clearTimeout(skyClearTimer); skyClearTimer = 0; skyEvent = null;
   }
@@ -170,10 +187,13 @@ export function initSeaside() {
     render(0);
   }
   boatButton.addEventListener('click', () => {
-    if (performance.now() < cooldownUntil) return;
-    cooldownUntil = performance.now() + 650;
-    if (boats.length >= 3) boats.splice(1, 1);
-    boats.push({ id: nextBoat++, born: time, resting: false, dx: 0, dy: 0, vx: 0, vy: 0, tilt: 0 });
+    const now = performance.now();
+    const inBurst = now < cooldownUntil;
+    cooldownUntil = now + 1200;
+    if (inBurst || boats.length > 1) return;
+    const main = boatPos(boats[0]);
+    const side = main.x < layout.left + layout.widthOfScene * .5 ? 'right' : 'left';
+    boats.push({ id: nextBoat++, side, born: time, resting: false, dx: 0, dy: 0, vx: 0, vy: 0, tilt: 0 });
     status.textContent = targetNight ? '又一只纸船，慢慢驶进月光。' : '小船下水了，随波漂一会儿。';
     render(0); schedule();
   });
@@ -181,9 +201,9 @@ export function initSeaside() {
     if (performance.now() < skyCooldownUntil) return;
     skyCooldownUntil = performance.now() + 700;
     clearSky();
-    skyEvent = { kind: targetNight ? 'meteor' : 'birds', born: time };
+    skyEvent = { ...createSkyEvent(targetNight ? 'meteor' : 'birds'), born: time };
     status.textContent = targetNight ? '流星划过，海面也亮起了星光。' : '海鸥掠过，阳光在波浪间闪动。';
-    skyClearTimer = setTimeout(() => { clearSky(); render(0); }, (skyDuration + .3) * 1000);
+    armStaticSkyExpiry();
     render(0); schedule();
   });
   motionButton.addEventListener('click', () => {
@@ -191,6 +211,7 @@ export function initSeaside() {
     paused = !paused;
     pointer = null;
     if (paused) { cancelAnimationFrame(frame); frame = 0; lastStamp = 0; }
+    armStaticSkyExpiry();
     updateLabels(); render(0); schedule();
   });
   scene.addEventListener('pointermove', event => {

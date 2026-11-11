@@ -1,3 +1,6 @@
+import { drawSkyEvent } from './sky-effects.js?v=20261111-living';
+import { drawCandleWater, drawBoatCandle } from './boat-candle.js?v=20261111-living';
+
 // A small, dependency-free illustrated sea. Animation and input belong to seaside.js.
 const TAU = Math.PI * 2;
 const clamp = (value, low = 0, high = 1) => Math.max(low, Math.min(high, value));
@@ -74,13 +77,6 @@ export function createOceanRenderer(canvas) {
     length: 5 + (index * 17 % 27),
     phase: index * 2.33,
   }));
-  const eventGlints = Array.from({ length: 34 }, (_, index) => ({
-    x: ((index * 137.317 + 39) % 997) / 997,
-    y: ((index * 89.113 + 81) % 997) / 997,
-    phase: index * 2.17,
-    size: 1.5 + (index % 4) * .55,
-  }));
-  const constellation = [[.12, .42], [.26, .2], [.43, .38], [.59, .17], [.79, .32], [.69, .67], [.48, .73]];
 
   function resize(nextWidth, nextHeight, dpr = 1) {
     width = Math.max(1, nextWidth);
@@ -233,6 +229,8 @@ export function createOceanRenderer(canvas) {
     ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
     ctx.globalAlpha = opacity;
 
+    drawCandleWater(ctx, time, night, phase);
+
     // The wake sits on the water plane instead of rotating with the folded paper.
     ctx.lineCap = 'round';
     for (let i = 0; i < 5; i++) {
@@ -258,147 +256,10 @@ export function createOceanRenderer(canvas) {
     ctx.clip(); ctx.translate(Math.sin(time * 1.1 + phase) * 2.3, 3); ctx.scale(1, -.45); ctx.rotate(-roll * .5);
     paperBody(ctx, night); ctx.restore();
 
-    ctx.save(); ctx.rotate(roll); paperBody(ctx, night); ctx.restore();
+    ctx.save(); ctx.rotate(roll); paperBody(ctx, night); drawBoatCandle(ctx, time, night, phase); ctx.restore();
     ctx.strokeStyle = rgb([234, 248, 236], [189, 224, 232], night, .45);
     ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(-29, 1.2);
     ctx.quadraticCurveTo(-3, 4.2 + Math.sin(time * 1.1 + phase), 27, 1.6); ctx.stroke();
-    ctx.restore();
-  }
-
-  function event(event, night, horizon, sun, bounds) {
-    if (!event) return;
-    const p = clamp(event.progress);
-    const envelope = smooth(0, .12, p) * (1 - smooth(.82, 1, p));
-    if (envelope <= 0) return;
-    const left = clamp(bounds?.left ?? Math.max(0, sun.x - Math.min(240, width * .66)), 0, width);
-    const sceneWidth = clamp(bounds?.width ?? (width - left), 1, Math.max(1, width - left));
-    const top = clamp(bounds?.top ?? (sun.y - sun.radius * 2.2), 0, height);
-    const bottom = clamp(bounds?.bottom ?? height, top, height);
-    const skyTop = Math.max(top + 5, sun.y - sun.radius * 2.2);
-    const skyBottom = Math.max(skyTop + 8, horizon - 12);
-    const skyHeight = skyBottom - skyTop;
-    const seaSpace = Math.max(0, bottom - horizon - 12);
-    const localTime = p * (event.duration || 6.5);
-    const daylight = event.kind === 'birds';
-    // A local glow gathers around the celestial body; there is no full-screen flash.
-    // Let the gradient reach transparent before the scenic boundary. Clipping a
-    // larger radial glow to the scene produced a visible rectangular edge.
-    const edgeRoom = Math.max(1, Math.min(sun.x - left, left + sceneWidth - sun.x, sun.y - top, bottom - sun.y) - 1);
-    const haloRadius = Math.max(1, Math.min(sceneWidth * .52, sun.radius * 4.5, edgeRoom));
-    const halo = ctx.createRadialGradient(sun.x, sun.y, Math.min(sun.radius * .5, haloRadius * .3), sun.x, sun.y, haloRadius);
-    halo.addColorStop(0, daylight ? `rgba(255,235,164,${envelope * .28})` : `rgba(173,206,237,${envelope * .16})`);
-    halo.addColorStop(1, 'rgba(210,229,236,0)');
-    ctx.fillStyle = halo; ctx.fillRect(sun.x - haloRadius, sun.y - haloRadius, haloRadius * 2, haloRadius * 2);
-    ctx.save(); ctx.beginPath(); ctx.rect(left, top, sceneWidth, bottom - top); ctx.clip();
-
-    if (daylight) {
-      // A seven-bird formation flies through the patch of sky the visitor can see.
-      for (let i = 0; i < 7; i++) {
-        const flight = clamp((p - .07 - i * .025) / .77);
-        const alpha = Math.sin(flight * Math.PI) * envelope;
-        if (alpha <= .001) continue;
-        const bx = left + mix(-sceneWidth * .12, sceneWidth * 1.14, flight);
-        const by = skyTop + skyHeight * (.57 + Math.sin(i * 1.7) * .14) - Math.sin(flight * Math.PI) * Math.min(19, skyHeight * .17);
-        const size = (10 + (i % 3) * 2.2) * clamp(sceneWidth / 310, .8, 1.12);
-        const wing = size * (.22 + Math.sin(localTime * 5.1 + i * .65) * .47);
-        const wings = () => {
-          ctx.beginPath(); ctx.moveTo(bx - size, by - wing);
-          ctx.bezierCurveTo(bx - size * .72, by - wing - 1, bx - size * .33, by - 2, bx, by + 1.4);
-          ctx.bezierCurveTo(bx + size * .33, by - 2, bx + size * .72, by - wing - 1, bx + size, by - wing);
-        };
-        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        wings(); ctx.strokeStyle = `rgba(55,100,118,${alpha * .65})`; ctx.lineWidth = 3.2; ctx.stroke();
-        wings(); ctx.strokeStyle = `rgba(253,251,236,${alpha * .94})`; ctx.lineWidth = 1.6; ctx.stroke();
-        ctx.fillStyle = `rgba(249,246,228,${alpha})`;
-        ctx.beginPath(); ctx.ellipse(bx, by + 1, 2.3, 1.5, 0, 0, TAU); ctx.fill();
-      }
-      const warmth = envelope * (.7 + .3 * Math.sin(p * Math.PI));
-      ctx.strokeStyle = `rgba(255,235,170,${warmth * .34})`; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
-      for (let i = 0; i < 10; i++) {
-        const angle = i * TAU / 10 + .12;
-        const inner = sun.radius * 1.35;
-        const outer = inner + 7 + Math.sin(p * Math.PI) * 8;
-        ctx.beginPath(); ctx.moveTo(sun.x + Math.cos(angle) * inner, sun.y + Math.sin(angle) * inner);
-        ctx.lineTo(sun.x + Math.cos(angle) * outer, sun.y + Math.sin(angle) * outer); ctx.stroke();
-      }
-    } else {
-      // A little constellation is gradually traced, then several meteors pass it.
-      for (let i = 0; i < constellation.length; i++) {
-        const star = constellation[i];
-        const x = left + sceneWidth * star[0];
-        const y = skyTop + skyHeight * star[1];
-        const reveal = smooth(.02 + i * .035, .16 + i * .035, p) * envelope;
-        if (i > 0) {
-          const previous = constellation[i - 1];
-          const trace = smooth(.06 + i * .035, .2 + i * .035, p);
-          const px = left + sceneWidth * previous[0], py = skyTop + skyHeight * previous[1];
-          ctx.strokeStyle = `rgba(172,211,235,${reveal * .46})`; ctx.lineWidth = 1.1;
-          ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(mix(px, x, trace), mix(py, y, trace)); ctx.stroke();
-        }
-        const twinkle = .68 + .32 * Math.sin(localTime * 2.7 + i);
-        const radius = (i % 3 === 0 ? 2.7 : 1.8) * (.85 + twinkle * .15);
-        ctx.fillStyle = `rgba(239,245,226,${reveal * twinkle})`;
-        ctx.beginPath(); ctx.arc(x, y, radius, 0, TAU); ctx.fill();
-        ctx.strokeStyle = `rgba(216,237,244,${reveal * .75})`; ctx.lineWidth = 1.1;
-        const arm = radius * 2.3;
-        ctx.beginPath(); ctx.moveTo(x - arm, y); ctx.lineTo(x + arm, y); ctx.moveTo(x, y - arm); ctx.lineTo(x, y + arm); ctx.stroke();
-      }
-      for (let i = 0; i < 4; i++) {
-        const flight = clamp((p - .16 - i * .15) / .28);
-        if (flight <= 0 || flight >= 1) continue;
-        const alpha = Math.sin(flight * Math.PI) * envelope;
-        const x = left + sceneWidth * mix(.91 - i * .035, .13 + i * .08, flight);
-        const y = skyTop + skyHeight * mix(.06 + i * .085, .75 + (i % 2) * .12, flight);
-        const length = Math.min(sceneWidth * (.23 - i * .024), 105);
-        const trail = ctx.createLinearGradient(x + length, y - length * .35, x, y);
-        trail.addColorStop(0, 'rgba(213,235,248,0)'); trail.addColorStop(.7, `rgba(194,223,244,${alpha * .35})`);
-        trail.addColorStop(1, `rgba(244,248,231,${alpha})`);
-        ctx.strokeStyle = trail; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(x + length, y - length * .35); ctx.lineTo(x, y);
-        ctx.save(); ctx.globalAlpha = .24; ctx.lineWidth = 8 - i * .6; ctx.stroke(); ctx.restore();
-        ctx.lineWidth = 3 - i * .3; ctx.stroke();
-        const glow = ctx.createRadialGradient(x, y, 0, x, y, 8 - i * .6);
-        glow.addColorStop(0, `rgba(223,242,250,${alpha * .6})`); glow.addColorStop(1, 'rgba(223,242,250,0)');
-        ctx.fillStyle = glow; ctx.fillRect(x - 8, y - 8, 16, 16);
-        ctx.fillStyle = `rgba(249,250,233,${alpha})`; ctx.beginPath(); ctx.arc(x, y, 2.7 - i * .25, 0, TAU); ctx.fill();
-      }
-    }
-
-    // The sky responds in the water too: an illuminated path, sparkles and three
-    // low, widening ripples all stay inside the scenic part of the homepage.
-    if (seaSpace > 8) {
-      const light = daylight ? [255, 238, 174] : [191, 225, 245];
-      for (let i = 0; i < 23; i++) {
-        const depth = i / 22;
-        const y = horizon + 7 + depth * seaSpace * .87;
-        const spread = (8 + depth * Math.min(80, sceneWidth * .21)) * (.7 + .3 * Math.sin(i * 2.37 + localTime * 1.5));
-        const x = sun.x + Math.sin(i * 1.8 + localTime) * (3 + depth * 9);
-        ctx.strokeStyle = `rgba(${light.join(',')},${envelope * (.27 - depth * .11)})`;
-        ctx.lineWidth = 1 + depth * 2.2; ctx.beginPath(); ctx.moveTo(x - spread, y);
-        ctx.quadraticCurveTo(x, y + Math.sin(localTime * 1.4 + i) * 2.4, x + spread, y); ctx.stroke();
-      }
-      for (const speck of eventGlints) {
-        const x = left + 9 + speck.x * Math.max(1, sceneWidth - 18);
-        const y = horizon + 10 + speck.y * Math.max(1, seaSpace - 10);
-        const pulse = Math.max(0, Math.sin(localTime * 2.8 + speck.phase)) ** 3;
-        const alpha = envelope * pulse * .7;
-        if (alpha < .02) continue;
-        const size = speck.size * (.65 + speck.y * .5);
-        ctx.strokeStyle = `rgba(${light.join(',')},${alpha})`; ctx.lineWidth = .9;
-        ctx.beginPath(); ctx.moveTo(x - size * 1.8, y); ctx.lineTo(x + size * 1.8, y);
-        ctx.moveTo(x, y - size); ctx.lineTo(x, y + size); ctx.stroke();
-      }
-      for (let i = 0; i < 3; i++) {
-        const expansion = clamp((p - .15 - i * .18) / .42);
-        if (expansion <= 0 || expansion >= 1) continue;
-        const alpha = Math.sin(expansion * Math.PI) * envelope * .32;
-        const x = clamp(sun.x - sceneWidth * .16, left + sceneWidth * .22, left + sceneWidth * .78);
-        const y = horizon + seaSpace * (.31 + i * .07);
-        const radius = 10 + expansion * Math.min(95, sceneWidth * .34);
-        ctx.strokeStyle = `rgba(${light.join(',')},${alpha})`; ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.ellipse(x, y, radius, 2.5 + expansion * 9, 0, 0, TAU); ctx.stroke();
-      }
-    }
     ctx.restore();
   }
 
@@ -412,7 +273,7 @@ export function createOceanRenderer(canvas) {
     ctx.globalAlpha = 1;
     sky(time, night, horizon, sun, cycle);
     sea(time, night, horizon, sun, cycle);
-    event(skyEvent, night, horizon, sun, skyEvent?.sceneBounds || sceneBounds);
+    drawSkyEvent(ctx, skyEvent, { width, height, horizon, celestial: sun, sceneBounds: skyEvent?.sceneBounds || sceneBounds });
     [...boats].sort((a, b) => a.y - b.y).forEach(item => boat(item, time, night));
   }
 
