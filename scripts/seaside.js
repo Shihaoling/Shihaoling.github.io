@@ -1,5 +1,6 @@
-import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-reflections';
-import { createSkyEvent } from './sky-effects.js?v=20261111-moonlight';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-ambient-meteors';
+import { createSkyEvent } from './sky-effects.js?v=20261111-ambient-meteors';
+import { createAmbientMeteor } from './ambient-meteors.js?v=20261111-ambient-meteors';
 import { spaceBoats } from './boat-spacing.js?v=20261111-moonlight';
 
 // The water, light and boats are painted together in one coordinate system.
@@ -29,6 +30,9 @@ export function initSeaside() {
   let layout;
   let pointer = null;
   let skyEvent = null;
+  let ambientMeteor = null;
+  let nextMeteor = 1;
+  let meteorWait = 3 + Math.random() * 3;
   let skyClearTimer = 0;
   let skyCooldownUntil = 0;
   const boatLifetime = 30;
@@ -50,11 +54,11 @@ export function initSeaside() {
   const canAnimate = () => !reduced.matches && (!paused || motionSpeed > 0 || !!motionJourney);
   const canRun = () => visible && focused && !document.hidden;
   const hasAnimatedSky = () => !!skyEvent && !skyEvent.staticPreview && !reduced.matches;
-  const needsFrame = () => canAnimate() || hasAnimatedSky() || night !== targetNight;
+  const needsFrame = () => canAnimate() || hasAnimatedSky() || !!ambientMeteor || night !== targetNight;
   function updateLabels() {
     const isNight = targetNight === 1;
     scene.querySelector('#seaside-time').textContent = isNight ? '入夜' : '白天';
-    skyButton.setAttribute('aria-label', isNight ? '点一下月亮，看流星与星光海面' : '点一下太阳，看海鸥掠过与波光');
+    skyButton.setAttribute('aria-label', isNight ? '点一下月亮，看星座与星光海面' : '点一下太阳，看海鸥掠过与波光');
     motionButton.setAttribute('aria-pressed', String(paused || reduced.matches));
     motionButton.setAttribute('aria-label', reduced.matches ? '已按系统偏好减少动态效果' : paused ? '恢复海面动画' : '暂停海面动画');
     motionButton.setAttribute('aria-disabled', String(reduced.matches));
@@ -118,7 +122,7 @@ export function initSeaside() {
       };
     }), layout.left, layout.widthOfScene);
     const skyProgress = skyEvent ? clamp(skyEvent.elapsed / skyEvent.duration, 0, 1) : 0;
-    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { ...skyEvent, progress: skyProgress } : null });
+    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { ...skyEvent, progress: skyProgress } : null, ambientMeteor: ambientMeteor ? { ...ambientMeteor, progress: clamp(ambientMeteor.elapsed / ambientMeteor.duration, 0, 1) } : null });
     // DOM-facing state also makes lifecycle and interaction regression checks possible.
     canvas.dataset.boats = String(drawn.length);
     const orderedBoats = [...drawn].sort((a, b) => a.x - b.x);
@@ -133,7 +137,10 @@ export function initSeaside() {
     canvas.dataset.reaction = String(drawn.some((_, i) => Math.abs(boats[i].dx) > .2 || Math.abs(boats[i].tilt) > .003));
     canvas.dataset.frame = String(Math.round(time * 30));
     canvas.dataset.sky = skyEvent?.kind || '';
-    canvas.dataset.skyVisitors = skyEvent ? String(skyEvent.birds?.length || skyEvent.meteors?.length || 0) : '';
+    canvas.dataset.skyVisitors = skyEvent ? String(skyEvent.birds?.length || skyEvent.constellations?.length || 0) : '';
+    canvas.dataset.meteor = ambientMeteor ? String(ambientMeteor.id) : '';
+    canvas.dataset.meteorProgress = ambientMeteor ? (ambientMeteor.elapsed / ambientMeteor.duration).toFixed(3) : '';
+    canvas.dataset.meteorWait = meteorWait.toFixed(3);
     canvas.dataset.skyPattern = skyEvent?.patternId || '';
     canvas.dataset.constellations = String(skyEvent?.constellations?.length || 0);
     canvas.dataset.skyProgress = skyEvent ? skyProgress.toFixed(3) : '';
@@ -177,6 +184,18 @@ export function initSeaside() {
       skyEvent.elapsed += dt;
       if (skyEvent.elapsed >= skyEvent.duration) clearSky();
     }
+    // Ambient visitors are independent of clicks. Finish an existing streak
+    // even if the sea is paused, but only schedule new ones while it is playing.
+    if (ambientMeteor) {
+      ambientMeteor.elapsed += dt;
+      if (ambientMeteor.elapsed >= ambientMeteor.duration) ambientMeteor = null;
+    } else if (!reduced.matches && !paused && night === 1 && targetNight === 1) {
+      meteorWait -= dt;
+      if (meteorWait <= 0) {
+        ambientMeteor = { ...createAmbientMeteor(), id: nextMeteor++, elapsed: 0 };
+        meteorWait = 7 + Math.random() * 7;
+      }
+    }
     if (reduced.matches) { night = targetNight; themeJourney = null; }
     else if (themeJourney) {
       themeJourney.elapsed += dt;
@@ -215,6 +234,7 @@ export function initSeaside() {
     motionJourney = null; motionSpeed = paused || reduced.matches ? 0 : 1;
     night = targetNight; themeJourney = null;
     clearSky();
+    ambientMeteor = null; meteorWait = 3 + Math.random() * 3;
     // Retain the resting boat; clear temporary boats when leaving the scene.
     boats.splice(1);
     boats[0].dx = boats[0].dy = boats[0].vx = boats[0].vy = boats[0].tilt = 0;
@@ -238,10 +258,10 @@ export function initSeaside() {
     if (performance.now() < skyCooldownUntil) return;
     skyCooldownUntil = performance.now() + 700;
     clearSky();
-    const event = createSkyEvent(targetNight ? 'meteor' : 'birds');
+    const event = createSkyEvent(targetNight ? 'constellations' : 'birds');
     const staticPreview = reduced.matches;
     skyEvent = { ...event, elapsed: staticPreview ? event.duration * .42 : 0, staticPreview };
-    status.textContent = targetNight ? '流星划过，海面也亮起了星光。' : '海鸥掠过，阳光在波浪间闪动。';
+    status.textContent = targetNight ? '星座渐渐亮起，海面也泛起星光。' : '海鸥掠过，阳光在波浪间闪动。';
     armStaticSkyExpiry();
     render(0); schedule();
   });
@@ -278,6 +298,7 @@ export function initSeaside() {
     currentTheme = root.dataset.theme;
     targetNight = currentTheme === 'dark' ? 1 : 0;
     clearSky();
+    meteorWait = 3 + Math.random() * 3;
     if (reduced.matches || !canRun()) { night = targetNight; themeJourney = null; }
     else themeJourney = { from: night, elapsed: 0, duration: Math.max(.45, 3.2 * Math.abs(targetNight - night)) };
     updateLabels(); render(0); schedule();

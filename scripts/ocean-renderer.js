@@ -1,4 +1,5 @@
-import { drawSkyEvent } from './sky-effects.js?v=20261111-moonlight';
+import { drawSkyEvent } from './sky-effects.js?v=20261111-ambient-meteors';
+import { drawAmbientMeteor } from './ambient-meteors.js?v=20261111-ambient-meteors';
 import { drawCandleWater, drawBoatCandle } from './boat-candle.js?v=20261111-living';
 
 // A small, dependency-free illustrated sea. Animation and input belong to seaside.js.
@@ -335,7 +336,7 @@ export function createOceanRenderer(canvas) {
     ctx.restore();
   }
 
-  function render({ time = 0, night = 0, horizon = height * .42, celestial, boats = [], skyEvent = null, sceneBounds = null } = {}) {
+  function render({ time = 0, night = 0, horizon = height * .42, celestial, boats = [], skyEvent = null, ambientMeteor = null, sceneBounds = null } = {}) {
     if (disposed) return;
     night = clamp(night);
     horizon = clamp(horizon, 70, Math.max(70, height - 30));
@@ -346,6 +347,7 @@ export function createOceanRenderer(canvas) {
     sky(time, night, horizon, sun, cycle);
     sea(time, night, horizon, sun, cycle);
     drawSkyEvent(ctx, skyEvent, { width, height, horizon, celestial: sun, sceneBounds: skyEvent?.sceneBounds || sceneBounds });
+    drawAmbientMeteor(ctx, ambientMeteor, { width, height, horizon, celestial: cycle.moon, sceneBounds, night });
     [...boats].sort((a, b) => a.y - b.y).forEach(item => boat(item, time, night));
   }
 

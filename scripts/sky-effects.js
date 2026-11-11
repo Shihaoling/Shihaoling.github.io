@@ -46,10 +46,10 @@ export function createSkyEvent(kind, random = Math.random) {
   const next = () => clamp(Number(random()) || 0, 0, 1 - Number.EPSILON);
   const between = (a, b) => mix(a, b, next());
   const event = {
-    kind: kind === 'birds' ? 'birds' : 'meteor',
+    kind: kind === 'birds' ? 'birds' : 'constellations',
     patternId: Math.floor(next() * 0xffffffffff).toString(36).padStart(8, '0'),
     duration: between(7.6, 8.8),
-    birds: [], meteors: [], constellations: [],
+    birds: [], constellations: [],
     sparkles: Array.from({ length: 34 }, () => ({ x: next(), y: next(), phase: between(0, TAU), size: between(1.5, 3.1) })),
     rippleX: between(.4, .66),
     lightPhase: between(0, TAU),
@@ -99,21 +99,6 @@ export function createSkyEvent(kind, random = Math.random) {
         reveal: .02 + index * .055 + between(0, .035),
         phase: between(0, TAU),
         points: starPatterns[chosen].map(([x, y]) => ({ x: x + between(-.018, .018), y: y + between(-.018, .018), size: between(1.6, 2.5) })),
-      };
-    });
-    const count = 5 + Math.floor(next() * 4);
-    event.meteors = Array.from({ length: count }, (_, index) => {
-      const start = .12 + index / Math.max(1, count - 1) * .57 + between(-.025, .025);
-      const x = between(.58, .98);
-      const y = between(.03, .34);
-      return {
-        start, end: Math.min(.975, start + between(.19, .285)),
-        x, y,
-        endX: Math.max(.035, x - between(.28, .65)),
-        endY: Math.min(.97, y + between(.29, .62)),
-        length: between(.12, .27),
-        thickness: between(1.9, 3.2),
-        glow: between(5.8, 8.8),
       };
     });
   }
@@ -230,36 +215,6 @@ function drawConstellations(ctx, event, scene, envelope, time) {
   }
 }
 
-function drawMeteors(ctx, event, scene, envelope) {
-  const { left, width, skyTop, skyHeight, sun: moon } = scene;
-  const span = width - left;
-  for (const meteor of event.meteors) {
-    const flight = clamp((event.progress - meteor.start) / (meteor.end - meteor.start));
-    if (flight <= 0 || flight >= 1) continue;
-    const alpha = Math.sin(flight * Math.PI) * envelope;
-    const startX = left + span * meteor.x, startY = skyTop + skyHeight * meteor.y;
-    const endX = left + span * meteor.endX, endY = skyTop + skyHeight * meteor.endY;
-    const x = mix(startX, endX, flight), y = mix(startY, endY, flight);
-    const dx = startX - endX, dy = startY - endY;
-    const distance = Math.max(1, Math.hypot(dx, dy));
-    const length = Math.min(span * meteor.length, 125);
-    const tx = x + dx / distance * length, ty = y + dy / distance * length;
-    const trail = ctx.createLinearGradient(tx, ty, x, y);
-    for (const stop of moonLineStops({ x: tx, y: ty }, { x, y }, moon, event.progress, meteor.glow * .5 + .8)) {
-      const tail = stop.offset <= .7 ? stop.offset / .7 * .35 : mix(.35, 1, (stop.offset - .7) / .3);
-      const red = Math.round(mix(213, 244, stop.offset)), green = Math.round(mix(235, 248, stop.offset)), blue = Math.round(mix(248, 231, stop.offset));
-      trail.addColorStop(stop.offset, `rgba(${red},${green},${blue},${alpha * tail * stop.alpha})`);
-    }
-    ctx.strokeStyle = trail; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(x, y);
-    ctx.save(); ctx.globalAlpha = .24; ctx.lineWidth = meteor.glow; ctx.stroke(); ctx.restore();
-    ctx.lineWidth = meteor.thickness; ctx.stroke();
-    const glow = ctx.createRadialGradient(x, y, 0, x, y, meteor.glow);
-    const headAlpha = alpha * moonVisibility(x, y, moon, event.progress, meteor.glow + .5);
-    glow.addColorStop(0, `rgba(223,242,250,${headAlpha * .6})`); glow.addColorStop(1, 'rgba(223,242,250,0)');
-    ctx.fillStyle = glow; ctx.fillRect(x - meteor.glow, y - meteor.glow, meteor.glow * 2, meteor.glow * 2);
-    ctx.fillStyle = `rgba(249,250,233,${headAlpha})`; ctx.beginPath(); ctx.arc(x, y, meteor.thickness * .8, 0, TAU); ctx.fill();
-  }
-}
 
 function drawWater(ctx, event, scene, envelope, time) {
   const { left, sceneWidth, horizon, bottom, sun } = scene;
@@ -323,7 +278,6 @@ export function drawSkyEvent(ctx, event, layout) {
     }
   } else {
     drawConstellations(ctx, event, scene, envelope, time);
-    drawMeteors(ctx, event, scene, envelope);
   }
   drawWater(ctx, event, scene, envelope, time);
   ctx.restore();
