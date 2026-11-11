@@ -1,4 +1,4 @@
-import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-cycle';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-sky';
 
 // The water, light and boats are painted together in one coordinate system.
 export function initSeaside() {
@@ -27,6 +27,10 @@ export function initSeaside() {
   let layout;
   let pointer = null;
   let skyEvent = null;
+  let skyClearTimer = 0;
+  let skyCooldownUntil = 0;
+  const skyDuration = 6.5;
+  const boatLifetime = 30;
   let paused = false;
   let visible = true;
   let focused = true;
@@ -45,7 +49,7 @@ export function initSeaside() {
   function updateLabels() {
     const isNight = targetNight === 1;
     scene.querySelector('#seaside-time').textContent = isNight ? '入夜' : '白天';
-    skyButton.setAttribute('aria-label', isNight ? '点点月亮，看一颗流星' : '点点太阳，看看海鸥');
+    skyButton.setAttribute('aria-label', isNight ? '点一下月亮，看流星与星光海面' : '点一下太阳，看海鸥掠过与波光');
     motionButton.setAttribute('aria-pressed', String(paused || reduced.matches));
     motionButton.setAttribute('aria-label', reduced.matches ? '已按系统偏好减少动态效果' : paused ? '恢复海面动画' : '暂停海面动画');
     motionButton.setAttribute('aria-disabled', String(reduced.matches));
@@ -63,9 +67,10 @@ export function initSeaside() {
     layout = {
       width: oceanRect.width, height: oceanRect.height, horizon,
       left: sceneRect.left - oceanRect.left, widthOfScene: sceneRect.width,
+      sceneBounds: { left: sceneRect.left - oceanRect.left, width: sceneRect.width, top: sceneRect.top - oceanRect.top, bottom: dockRect.top - oceanRect.top },
       waterline: horizon + Math.max(38, (dockRect.top - oceanRect.top - horizon) * .54),
       celestial: { x: skyRect.left - oceanRect.left + skyRect.width / 2, y: skyRect.top - oceanRect.top + (mobile ? 28 : 38), radius: mobile ? 20 : 28 },
-      scale: clamp(sceneRect.width / 410, .67, .98),
+      scale: clamp(sceneRect.width / 395, .72, 1.08),
     };
     painter.resize(layout.width, layout.height, Math.min(devicePixelRatio || 1, innerWidth < 600 ? 1.5 : 2));
     render(0);
@@ -73,7 +78,7 @@ export function initSeaside() {
   }
   function boatPos(boat) {
     const age = time - boat.born;
-    const fraction = boat.resting ? .43 + Math.sin(time * .07) * .055 : .13 + clamp(age / 38, 0, 1) * .72;
+    const fraction = boat.resting ? .45 + Math.sin(time * .26) * .10 : .10 + clamp(age / boatLifetime, 0, 1) * .79;
     return { x: layout.left + layout.widthOfScene * fraction, y: layout.waterline + (boat.resting ? 0 : 12 + (boat.id % 2) * 12), age };
   }
   function render(dt) {
@@ -86,10 +91,10 @@ export function initSeaside() {
       if (pointer && animated) {
         const dx = p.x - pointer.x, dy = p.y - pointer.y;
         const distance = Math.hypot(dx, dy);
-        const strength = Math.pow(Math.max(0, 1 - distance / 115), 2);
-        targetX = (dx / Math.max(18, distance)) * strength * 15;
-        targetY = (dy / Math.max(18, distance)) * strength * 3;
-        targetTilt = (dx / Math.max(18, distance)) * strength * .09;
+        const strength = Math.pow(Math.max(0, 1 - distance / 135), 2);
+        targetX = (dx / Math.max(18, distance)) * strength * 22;
+        targetY = (dy / Math.max(18, distance)) * strength * 5;
+        targetTilt = (dx / Math.max(18, distance)) * strength * .12;
       }
       // A damped spring gives the boat a little inertia, never a cursor lock.
       if (dt > 0 && animated) {
@@ -103,16 +108,18 @@ export function initSeaside() {
         x: p.x + boat.dx, y: p.y + wave.lift + boat.dy,
         scale: layout.scale * (boat.resting ? 1 : .83),
         roll: wave.roll + boat.tilt,
-        opacity: boat.resting || !animated ? 1 : Math.min(1, p.age / 1.2, (38 - p.age) / 3), phase: time + boat.id * 2,
+        opacity: boat.resting || !animated ? 1 : Math.min(1, p.age / 1.2, (boatLifetime - p.age) / 3), phase: boat.id * 2,
       };
     });
-    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, boats: drawn, skyEvent: skyEvent ? { kind: skyEvent.kind, progress: animated ? clamp((time - skyEvent.born) / 3.8, 0, 1) : .42 } : null });
+    painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { kind: skyEvent.kind, progress: animated ? clamp((time - skyEvent.born) / skyDuration, 0, 1) : .42 } : null });
     // DOM-facing state also makes lifecycle and interaction regression checks possible.
     canvas.dataset.boats = String(drawn.length);
     canvas.dataset.motion = animated && canRun() ? 'running' : 'still';
     canvas.dataset.reaction = String(drawn.some((_, i) => Math.abs(boats[i].dx) > .2 || Math.abs(boats[i].tilt) > .003));
     canvas.dataset.frame = String(Math.round(time * 30));
     canvas.dataset.sky = skyEvent?.kind || '';
+    canvas.dataset.skyProgress = skyEvent ? (animated ? clamp((time - skyEvent.born) / skyDuration, 0, 1) : .42).toFixed(3) : '';
+    scene.classList.toggle('is-playing', !!skyEvent);
     const cycle = getCelestialCycle(night, layout.horizon, layout.celestial, layout.width);
     canvas.dataset.phase = night.toFixed(4);
     canvas.dataset.sunY = cycle.sun.y.toFixed(1);
@@ -122,7 +129,7 @@ export function initSeaside() {
     scene.classList.toggle('is-changing', changing);
     skyButton.disabled = changing;
     scene.querySelector('#seaside-time').textContent = changing ? (targetNight ? '日落 · 月升' : '月落 · 日出') : (targetNight ? '入夜' : '白天');
-    if (drawn[0]) { canvas.dataset.boatX = drawn[0].x.toFixed(1); canvas.dataset.boatY = drawn[0].y.toFixed(1); }
+    if (drawn[0]) { canvas.dataset.boatX = drawn[0].x.toFixed(1); canvas.dataset.boatY = drawn[0].y.toFixed(1); canvas.dataset.boatRoll = drawn[0].roll.toFixed(3); }
   }
   function tick(stamp) {
     frame = 0;
@@ -132,8 +139,8 @@ export function initSeaside() {
     lastStamp = stamp;
     if (canAnimate()) {
       time += dt;
-      for (let i = boats.length - 1; i > 0; i--) if (time - boats[i].born >= 38) boats.splice(i, 1);
-      if (skyEvent && time - skyEvent.born >= 3.8) skyEvent = null;
+      for (let i = boats.length - 1; i > 0; i--) if (time - boats[i].born >= boatLifetime) boats.splice(i, 1);
+      if (skyEvent && time - skyEvent.born >= skyDuration) skyEvent = null;
     }
     if (reduced.matches) { night = targetNight; themeJourney = null; }
     else if (themeJourney) {
@@ -150,10 +157,13 @@ export function initSeaside() {
   function schedule() {
     if (!frame && canRun() && (canAnimate() || night !== targetNight)) frame = requestAnimationFrame(tick);
   }
+  function clearSky() {
+    clearTimeout(skyClearTimer); skyClearTimer = 0; skyEvent = null;
+  }
   function stop() {
     cancelAnimationFrame(frame); frame = 0; lastStamp = 0; pointer = null;
     night = targetNight; themeJourney = null;
-    skyEvent = null;
+    clearSky();
     // Retain the resting boat; clear temporary boats when leaving the scene.
     boats.splice(1);
     boats[0].dx = boats[0].dy = boats[0].vx = boats[0].vy = boats[0].tilt = 0;
@@ -168,8 +178,12 @@ export function initSeaside() {
     render(0); schedule();
   });
   skyButton.addEventListener('click', () => {
+    if (performance.now() < skyCooldownUntil) return;
+    skyCooldownUntil = performance.now() + 700;
+    clearSky();
     skyEvent = { kind: targetNight ? 'meteor' : 'birds', born: time };
-    status.textContent = targetNight ? '刚好，一颗流星。' : '几只海鸥从海上飞过。';
+    status.textContent = targetNight ? '流星划过，海面也亮起了星光。' : '海鸥掠过，阳光在波浪间闪动。';
+    skyClearTimer = setTimeout(() => { clearSky(); render(0); }, (skyDuration + .3) * 1000);
     render(0); schedule();
   });
   motionButton.addEventListener('click', () => {
@@ -203,7 +217,7 @@ export function initSeaside() {
     if (root.dataset.theme === currentTheme) return;
     currentTheme = root.dataset.theme;
     targetNight = currentTheme === 'dark' ? 1 : 0;
-    skyEvent = null;
+    clearSky();
     if (reduced.matches || !canRun()) { night = targetNight; themeJourney = null; }
     else themeJourney = { from: night, elapsed: 0, duration: Math.max(.45, 3.2 * Math.abs(targetNight - night)) };
     updateLabels(); render(0); schedule();

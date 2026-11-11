@@ -11,6 +11,7 @@
 .seaside.is-changing .sky-touch { pointer-events: none; }
 .seaside.is-changing .sky-hint { opacity: 0; }
 .sky-touch:focus-visible { outline-offset: 2px; }
+.seaside.is-playing .sky-hint { opacity: .35; }
 .seaside-dock { position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .seaside-caption { color: #173e50; font-size: 11px; letter-spacing: .12em; margin-bottom: 12px; }
 .seaside-caption > span:first-child { margin-inline: 7px; opacity: .45; }
