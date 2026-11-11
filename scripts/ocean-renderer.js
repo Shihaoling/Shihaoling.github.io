@@ -1,4 +1,4 @@
-import { drawSkyEvent } from './sky-effects.js?v=20261111-living';
+import { drawSkyEvent } from './sky-effects.js?v=20261111-moonlight';
 import { drawCandleWater, drawBoatCandle } from './boat-candle.js?v=20261111-living';
 
 // A small, dependency-free illustrated sea. Animation and input belong to seaside.js.

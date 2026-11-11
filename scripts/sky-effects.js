@@ -7,6 +7,31 @@ const smooth = (start, end, value) => {
   return t * t * (3 - 2 * t);
 };
 
+/**
+ * Local moonlight washes out stars before they reach the lunar disc.
+ * padding reserves the full extent of a star cross, stroke, or meteor glow.
+ */
+export function moonVisibility(x, y, moon, progress = 0, padding = 0) {
+  if (!moon || !(moon.radius > 0)) return 1;
+  const distance = Math.max(0, Math.hypot(x - moon.x, y - moon.y) - Math.max(0, padding));
+  const spatial = smooth(moon.radius * 1.35, moon.radius * 3.25, distance) ** 1.2;
+  // Nearby lights fade sooner and further; distant constellations retain their
+  // existing event envelope instead of all disappearing as a single group.
+  const nearFade = smooth(.42 + spatial * .22, .68 + spatial * .28, progress);
+  return spatial * mix(1, spatial, nearFade);
+}
+
+/** Sample the entire segment, including its interior if it crosses the moon. */
+export function moonLineStops(from, to, moon, progress = 0, padding = 0) {
+  const distance = Math.hypot(to.x - from.x, to.y - from.y);
+  const steps = Math.max(2, Math.min(256, Math.ceil(distance / 3)));
+  return Array.from({ length: steps + 1 }, (_, index) => {
+    const offset = index / steps;
+    const x = mix(from.x, to.x, offset), y = mix(from.y, to.y, offset);
+    return { offset, x, y, alpha: moonVisibility(x, y, moon, progress, padding) };
+  });
+}
+
 // Decorative constellations, intentionally not astronomical charts.
 const starPatterns = [
   [[.08,.64],[.2,.28],[.46,.11],[.69,.37],[.9,.22],[.77,.79]],
@@ -172,7 +197,7 @@ function drawBird(ctx, bird, pose) {
 }
 
 function drawConstellations(ctx, event, scene, envelope, time) {
-  const { left, sceneWidth, skyTop, skyHeight } = scene;
+  const { left, sceneWidth, skyTop, skyHeight, sun: moon } = scene;
   for (const cluster of event.constellations) {
     const originX = left + cluster.x * sceneWidth;
     const originY = skyTop + cluster.y * skyHeight;
@@ -185,14 +210,20 @@ function drawConstellations(ctx, event, scene, envelope, time) {
         const previous = cluster.points[i - 1];
         const px = originX + previous.x * w, py = originY + previous.y * h;
         const trace = smooth(cluster.reveal + i * .018, cluster.reveal + .16 + i * .018, event.progress);
-        ctx.strokeStyle = `rgba(172,211,235,${reveal * .46})`; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(mix(px, x, trace), mix(py, y, trace)); ctx.stroke();
+        const ex = mix(px, x, trace), ey = mix(py, y, trace);
+        const line = ctx.createLinearGradient(px, py, ex, ey);
+        for (const stop of moonLineStops({ x: px, y: py }, { x: ex, y: ey }, moon, event.progress, .8)) {
+          line.addColorStop(stop.offset, `rgba(172,211,235,${reveal * .46 * stop.alpha})`);
+        }
+        ctx.strokeStyle = line; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ex, ey); ctx.stroke();
       }
       const twinkle = .72 + .28 * Math.sin(time * 2.3 + cluster.phase + i);
       const radius = point.size * (.86 + .14 * twinkle);
-      ctx.fillStyle = `rgba(240,246,229,${reveal * twinkle})`;
+      const visible = moonVisibility(x, y, moon, event.progress, radius * 2 + .6);
+      ctx.fillStyle = `rgba(240,246,229,${reveal * twinkle * visible})`;
       ctx.beginPath(); ctx.arc(x, y, radius, 0, TAU); ctx.fill();
-      ctx.strokeStyle = `rgba(216,237,244,${reveal * .7})`; ctx.lineWidth = .85;
+      ctx.strokeStyle = `rgba(216,237,244,${reveal * .7 * visible})`; ctx.lineWidth = .85;
       ctx.beginPath(); ctx.moveTo(x - radius * 2, y); ctx.lineTo(x + radius * 2, y);
       ctx.moveTo(x, y - radius * 2); ctx.lineTo(x, y + radius * 2); ctx.stroke();
     }
@@ -200,7 +231,7 @@ function drawConstellations(ctx, event, scene, envelope, time) {
 }
 
 function drawMeteors(ctx, event, scene, envelope) {
-  const { left, width, skyTop, skyHeight } = scene;
+  const { left, width, skyTop, skyHeight, sun: moon } = scene;
   const span = width - left;
   for (const meteor of event.meteors) {
     const flight = clamp((event.progress - meteor.start) / (meteor.end - meteor.start));
@@ -214,15 +245,19 @@ function drawMeteors(ctx, event, scene, envelope) {
     const length = Math.min(span * meteor.length, 125);
     const tx = x + dx / distance * length, ty = y + dy / distance * length;
     const trail = ctx.createLinearGradient(tx, ty, x, y);
-    trail.addColorStop(0, 'rgba(213,235,248,0)'); trail.addColorStop(.7, `rgba(194,223,244,${alpha * .35})`);
-    trail.addColorStop(1, `rgba(244,248,231,${alpha})`);
+    for (const stop of moonLineStops({ x: tx, y: ty }, { x, y }, moon, event.progress, meteor.glow * .5 + .8)) {
+      const tail = stop.offset <= .7 ? stop.offset / .7 * .35 : mix(.35, 1, (stop.offset - .7) / .3);
+      const red = Math.round(mix(213, 244, stop.offset)), green = Math.round(mix(235, 248, stop.offset)), blue = Math.round(mix(248, 231, stop.offset));
+      trail.addColorStop(stop.offset, `rgba(${red},${green},${blue},${alpha * tail * stop.alpha})`);
+    }
     ctx.strokeStyle = trail; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(x, y);
     ctx.save(); ctx.globalAlpha = .24; ctx.lineWidth = meteor.glow; ctx.stroke(); ctx.restore();
     ctx.lineWidth = meteor.thickness; ctx.stroke();
     const glow = ctx.createRadialGradient(x, y, 0, x, y, meteor.glow);
-    glow.addColorStop(0, `rgba(223,242,250,${alpha * .6})`); glow.addColorStop(1, 'rgba(223,242,250,0)');
+    const headAlpha = alpha * moonVisibility(x, y, moon, event.progress, meteor.glow + .5);
+    glow.addColorStop(0, `rgba(223,242,250,${headAlpha * .6})`); glow.addColorStop(1, 'rgba(223,242,250,0)');
     ctx.fillStyle = glow; ctx.fillRect(x - meteor.glow, y - meteor.glow, meteor.glow * 2, meteor.glow * 2);
-    ctx.fillStyle = `rgba(249,250,233,${alpha})`; ctx.beginPath(); ctx.arc(x, y, meteor.thickness * .8, 0, TAU); ctx.fill();
+    ctx.fillStyle = `rgba(249,250,233,${headAlpha})`; ctx.beginPath(); ctx.arc(x, y, meteor.thickness * .8, 0, TAU); ctx.fill();
   }
 }
 

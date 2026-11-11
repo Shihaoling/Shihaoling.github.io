@@ -1,6 +1,6 @@
-import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-living';
-import { createSkyEvent } from './sky-effects.js?v=20261111-living';
-import { spaceBoats } from './boat-spacing.js?v=20261111-living';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-moonlight';
+import { createSkyEvent } from './sky-effects.js?v=20261111-moonlight';
+import { spaceBoats } from './boat-spacing.js?v=20261111-moonlight';
 
 // The water, light and boats are painted together in one coordinate system.
 export function initSeaside() {
@@ -116,12 +116,13 @@ export function initSeaside() {
     painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { ...skyEvent, progress: animated ? clamp((time - skyEvent.born) / skyEvent.duration, 0, 1) : .42 } : null });
     // DOM-facing state also makes lifecycle and interaction regression checks possible.
     canvas.dataset.boats = String(drawn.length);
-    canvas.dataset.boatGap = drawn.length > 1 ? (Math.abs(drawn[1].x - drawn[0].x) - 42 * (drawn[0].scale + drawn[1].scale)).toFixed(1) : '';
+    const orderedBoats = [...drawn].sort((a, b) => a.x - b.x);
+    canvas.dataset.boatGap = drawn.length > 1 ? Math.min(...orderedBoats.slice(1).map((boat, i) => boat.x - orderedBoats[i].x - 42 * (boat.scale + orderedBoats[i].scale))).toFixed(1) : '';
     canvas.dataset.boatPositions = drawn.map(b => `${b.x.toFixed(1)},${b.y.toFixed(1)}`).join(';');
-    const occupied = boats.length > 1;
+    const occupied = boats.length >= 3;
     boatButton.setAttribute('aria-disabled', String(occupied));
     const launchLabel = boatButton.querySelector('.launch-boat-label');
-    if (launchLabel) launchLabel.textContent = occupied ? '小船漂流中' : '放一只纸船';
+    if (launchLabel) launchLabel.textContent = occupied ? '小船漂流中' : boats.length === 2 ? '再放一只纸船' : '放一只纸船';
     canvas.dataset.motion = animated && canRun() ? 'running' : 'still';
     canvas.dataset.reaction = String(drawn.some((_, i) => Math.abs(boats[i].dx) > .2 || Math.abs(boats[i].tilt) > .003));
     canvas.dataset.frame = String(Math.round(time * 30));
@@ -190,9 +191,10 @@ export function initSeaside() {
     const now = performance.now();
     const inBurst = now < cooldownUntil;
     cooldownUntil = now + 1200;
-    if (inBurst || boats.length > 1) return;
+    if (inBurst || boats.length >= 3) return;
     const main = boatPos(boats[0]);
-    const side = main.x < layout.left + layout.widthOfScene * .5 ? 'right' : 'left';
+    const preferred = main.x < layout.left + layout.widthOfScene * .5 ? 'right' : 'left';
+    const side = boats.some(boat => boat.side === preferred) ? (preferred === 'right' ? 'left' : 'right') : preferred;
     boats.push({ id: nextBoat++, side, born: time, resting: false, dx: 0, dy: 0, vx: 0, vy: 0, tilt: 0 });
     status.textContent = targetNight ? '又一只纸船，慢慢驶进月光。' : '小船下水了，随波漂一会儿。';
     render(0); schedule();
