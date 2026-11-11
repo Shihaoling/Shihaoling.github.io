@@ -37,13 +37,13 @@ export const profile = {
   travel: {
     base: { name: '中国大陆', countryName: '中国', lon: 104.2, lat: 35.9, date: '常驻', countryCode: 'CHN' },
     visits: [
-      { id: 'hong-kong', countryCode: 'HKG', name: '香港', date: '2012年8月', lon: 114.17, lat: 22.32 },
-      { id: 'australia', countryCode: 'AUS', name: '澳大利亚', date: '2013年8月', lon: 134, lat: -25 },
-      { id: 'japan', countryCode: 'JPN', name: '日本', date: '2014年7月', lon: 138, lat: 37 },
-      { id: 'vietnam', countryCode: 'VNM', name: '越南', date: '2017年7月', lon: 106, lat: 16 },
-      { id: 'usa', countryCode: 'USA', name: '美国', date: '2018年9—10月', lon: -99, lat: 38 },
-      { id: 'macau', countryCode: 'MAC', name: '澳门', date: '2024年7月', lon: 113.55, lat: 22.2 },
-      { id: 'singapore', countryCode: 'SGP', name: '新加坡', date: '2024年7月', lon: 103.82, lat: 1.35 },
+      { id: 'hong-kong', countryCode: 'HKG', name: '香港', date: '2012年8月', lon: 114.17, lat: 22.32, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '香港', lon: 114.17, lat: 22.32 }] },
+      { id: 'australia', countryCode: 'AUS', name: '澳大利亚', date: '2013年8月', lon: 134, lat: -25, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '悉尼', lon: 151.2093, lat: -33.8688 }] },
+      { id: 'japan', countryCode: 'JPN', name: '日本', date: '2014年7月', lon: 138, lat: 37, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '大阪', lon: 135.5023, lat: 34.6937 }, { name: '札幌', lon: 141.3545, lat: 43.0618 }, { name: '东京', lon: 139.6917, lat: 35.6895 }] },
+      { id: 'vietnam', countryCode: 'VNM', name: '越南', date: '2017年7月', lon: 106, lat: 16, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '河内', lon: 105.8342, lat: 21.0278 }] },
+      { id: 'usa', countryCode: 'USA', name: '美国', date: '2018年9—10月', lon: -99, lat: 38, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '诺福克 ORF', lon: -76.2012, lat: 36.8946 }, { name: 'First Flight Airport · FFA', shortName: 'First Flight · FFA', lon: -75.6713, lat: 36.0182 }] },
+      { id: 'macau', countryCode: 'MAC', name: '澳门', date: '2024年7月', lon: 113.55, lat: 22.2, route: [{ name: '上海浦东', lon: 121.8083, lat: 31.1443 }, { name: '澳门', lon: 113.55, lat: 22.2 }] },
+      { id: 'singapore', countryCode: 'SGP', name: '新加坡', date: '2024年7月', lon: 103.82, lat: 1.35, route: [{ name: '广州', lon: 113.2644, lat: 23.1291 }, { name: '新加坡', lon: 103.82, lat: 1.35 }] },
     ],
     wishlist: [
       { id: 'uk', name: '英国', countryCode: 'GBR', lon: -2.5, lat: 54.5 },

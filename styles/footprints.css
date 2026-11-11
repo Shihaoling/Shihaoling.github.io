@@ -111,3 +111,49 @@ html[data-theme="dark"] .map-replay-progress .is-current{background:#a5cfdd}
  .map-mobile-hint{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.travel-place,.map-country,.map-host.is-replaying .map-country,.map-replay-button,.map-replay-progress span{transition:none}}
+
+/* Flight replay keeps map, route and plane in one camera coordinate system. */
+.map-world-copy,.map-flight-layer{display:none;pointer-events:none}
+.map-host.is-replaying .map-world-copy,.map-host.is-replaying .map-flight-layer{display:block}
+.map-host.is-replaying .map-canvas{min-width:0}
+.map-host.is-replaying .map-markers{display:none}
+.map-host.is-replaying .map-country{pointer-events:none}
+.map-host.is-replaying .map-scroll{overflow:hidden;background:radial-gradient(ellipse at 50% 65%,#f9fcfd,#e9f1f4);border-radius:14px}
+.map-host.is-replaying .map-grid{stroke-width:.35;opacity:.45}
+.map-flight-guide{stroke:#7f9fac;opacity:.65;stroke-linecap:round}
+.map-flight-trail{stroke:#397c95;stroke-linecap:round;opacity:.9}
+.map-flight-plane-body{fill:#fff;stroke:#32647b;stroke-width:1.5;stroke-linejoin:round;filter:drop-shadow(0 3px 3px #183f5a33)}
+.map-flight-point{fill:#417f96;stroke:#fff;stroke-width:2}
+.map-flight-label-bg{fill:#ffffffec;stroke:#afc8d288;stroke-width:1}
+.map-flight-label{fill:#345a6e;font-family:var(--sans);font-weight:500}
+.map-flight-arrival{stroke:#5b94aa}
+.map-flight-caption{color:#416b80;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.map-replay-caption{flex:1}
+.map-replay-date{white-space:normal;line-height:1.5}
+.map-replay-next{flex-shrink:0;min-height:40px;padding:6px 9px;border:1px solid #bccfd780;border-radius:8px;background:transparent;color:#557b8d;font:11px var(--sans);cursor:pointer;white-space:nowrap}
+.map-replay-next:hover{background:#fff8}
+.map-replay-next:focus-visible{outline:2px solid #9a805f;outline-offset:3px}
+.map-replay-next[hidden]{display:none}
+html[data-theme="dark"] .map-host.is-replaying .map-scroll{background:radial-gradient(ellipse at 50% 65%,#213d50,#142b3c)}
+html[data-theme="dark"] .map-flight-guide{stroke:#86aebd}
+html[data-theme="dark"] .map-flight-trail{stroke:#a6d2df}
+html[data-theme="dark"] .map-flight-plane-body{fill:#e4f2f5;stroke:#517f96}
+html[data-theme="dark"] .map-flight-point{fill:#b2d9e5;stroke:#30536a}
+html[data-theme="dark"] .map-flight-label-bg{fill:#203b4fee;stroke:#63899b80}
+html[data-theme="dark"] .map-flight-label{fill:#d5e8f0}
+html[data-theme="dark"] .map-flight-arrival{stroke:#b2d9e5}
+html[data-theme="dark"] .map-flight-caption,html[data-theme="dark"] .map-replay-next{color:#b5d2df}
+html[data-theme="dark"] .map-replay-next:hover{background:#54738533}
+@media(max-width:700px){
+ .map-replay{gap:8px 10px;align-items:center}
+ .map-replay-caption{order:-1;flex-basis:100%}
+ .map-replay-place{font-size:11px}
+ .map-flight-caption{font-size:12px}
+ .map-replay-next{margin-left:auto;min-height:40px}
+ .map-replay-progress{display:none}
+ .map-host.is-replaying .map-mobile-hint{display:block}
+}
+
+.map-world{--map-land-opacity:1;--map-grid-color:#dde7eb;--map-grid-opacity:1}
+.map-host.is-replaying .map-world{--map-grid-opacity:.45}
+html[data-theme="dark"] .map-world{--map-land-opacity:.54;--map-grid-color:#73949d77}

@@ -1,5 +1,5 @@
-import { profile } from './profile.js';
-import { initFootprints } from './footprints.js?v=20261110';
+import { profile } from './profile.js?v=20261111-flight-replay';
+import { initFootprints } from './footprints.js?v=20261111-flight-replay';
 import { initTheme } from './theme.js';
 import { initLiquidGlass } from './liquid.js';
 import { initSeaside } from './seaside.js?v=20261111-ambient-meteors';
