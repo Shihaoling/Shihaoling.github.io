@@ -8,6 +8,8 @@
 .sky-touch { position: absolute; top: 2%; right: 7%; width: 100px; height: 100px; padding: 0; background: none; border-radius: 50%; color: #426b79; }
 .sky-hint { position: absolute; bottom: 0; width: 100%; left: 0; display: block; font: 11px/1.6 var(--sans); letter-spacing: .05em; opacity: .75; transition: opacity .2s; }
 .sky-touch:hover .sky-hint, .sky-touch:focus-visible .sky-hint { opacity: 1; }
+.seaside.is-changing .sky-touch { pointer-events: none; }
+.seaside.is-changing .sky-hint { opacity: 0; }
 .sky-touch:focus-visible { outline-offset: 2px; }
 .seaside-dock { position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .seaside-caption { color: #173e50; font-size: 11px; letter-spacing: .12em; margin-bottom: 12px; }

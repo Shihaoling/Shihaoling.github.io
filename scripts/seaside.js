@@ -1,4 +1,4 @@
-import { createOceanRenderer, sampleWave } from './ocean-renderer.js?v=20261110-sea2';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-cycle';
 
 // The water, light and boats are painted together in one coordinate system.
 export function initSeaside() {
@@ -36,6 +36,7 @@ export function initSeaside() {
   let currentTheme = root.dataset.theme;
   let targetNight = currentTheme === 'dark' ? 1 : 0;
   let night = targetNight;
+  let themeJourney = null;
   let cooldownUntil = 0;
 
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -112,6 +113,15 @@ export function initSeaside() {
     canvas.dataset.reaction = String(drawn.some((_, i) => Math.abs(boats[i].dx) > .2 || Math.abs(boats[i].tilt) > .003));
     canvas.dataset.frame = String(Math.round(time * 30));
     canvas.dataset.sky = skyEvent?.kind || '';
+    const cycle = getCelestialCycle(night, layout.horizon, layout.celestial, layout.width);
+    canvas.dataset.phase = night.toFixed(4);
+    canvas.dataset.sunY = cycle.sun.y.toFixed(1);
+    canvas.dataset.moonY = cycle.moon.y.toFixed(1);
+    canvas.dataset.stars = cycle.stars.toFixed(3);
+    const changing = night !== targetNight;
+    scene.classList.toggle('is-changing', changing);
+    skyButton.disabled = changing;
+    scene.querySelector('#seaside-time').textContent = changing ? (targetNight ? '日落 · 月升' : '月落 · 日出') : (targetNight ? '入夜' : '白天');
     if (drawn[0]) { canvas.dataset.boatX = drawn[0].x.toFixed(1); canvas.dataset.boatY = drawn[0].y.toFixed(1); }
   }
   function tick(stamp) {
@@ -125,8 +135,14 @@ export function initSeaside() {
       for (let i = boats.length - 1; i > 0; i--) if (time - boats[i].born >= 38) boats.splice(i, 1);
       if (skyEvent && time - skyEvent.born >= 3.8) skyEvent = null;
     }
-    night = reduced.matches ? targetNight : night + (targetNight - night) * Math.min(1, dt * 4);
-    if (Math.abs(night - targetNight) < .001) night = targetNight;
+    if (reduced.matches) { night = targetNight; themeJourney = null; }
+    else if (themeJourney) {
+      themeJourney.elapsed += dt;
+      const progress = Math.min(1, themeJourney.elapsed / themeJourney.duration);
+      const eased = progress * progress * (3 - 2 * progress);
+      night = themeJourney.from + (targetNight - themeJourney.from) * eased;
+      if (progress === 1) { night = targetNight; themeJourney = null; }
+    }
     render(dt);
     if (canAnimate() || night !== targetNight) schedule();
     else lastStamp = 0;
@@ -136,6 +152,7 @@ export function initSeaside() {
   }
   function stop() {
     cancelAnimationFrame(frame); frame = 0; lastStamp = 0; pointer = null;
+    night = targetNight; themeJourney = null;
     skyEvent = null;
     // Retain the resting boat; clear temporary boats when leaving the scene.
     boats.splice(1);
@@ -187,7 +204,8 @@ export function initSeaside() {
     currentTheme = root.dataset.theme;
     targetNight = currentTheme === 'dark' ? 1 : 0;
     skyEvent = null;
-    if (reduced.matches || !canRun()) night = targetNight;
+    if (reduced.matches || !canRun()) { night = targetNight; themeJourney = null; }
+    else themeJourney = { from: night, elapsed: 0, duration: Math.max(.45, 3.2 * Math.abs(targetNight - night)) };
     updateLabels(); render(0); schedule();
   }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   new ResizeObserver(measure).observe(hero);

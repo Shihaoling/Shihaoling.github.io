@@ -1,0 +1,100 @@
+/* Quiet nautical layers beneath the glass; decorative only, with no motion. */
+:root {
+  --shore-paper: #dfecef;
+  --shore-top: #eaf3f5;
+  --shore-mid: #dbe9ec;
+  --shore-bottom: #e7efec;
+  --shore-wash: #bfdde126;
+  --shore-edge: #b5cfd75c;
+}
+html[data-theme="dark"] {
+  --shore-paper: #142b3b;
+  --shore-top: #1a3547;
+  --shore-mid: #102637;
+  --shore-bottom: #1a3441;
+  --shore-wash: #6c9aa620;
+  --shore-edge: #a8cdd12e;
+}
+.content-surface,
+html[data-theme="dark"] .content-surface {
+  background-color: var(--shore-paper);
+  background-image:
+    url('../assets/coastal-contours.svg'),
+    linear-gradient(165deg, var(--shore-top) 0%, var(--shore-mid) 46%, var(--shore-bottom) 100%);
+  background-position: center top, center top;
+  background-size: 1600px 1200px, 100% 1600px;
+  background-repeat: repeat-y;
+  border-top-color: var(--shore-edge);
+}
+/* Each pane gets a different crop, leaving the reading area calm. */
+:root .content-surface :is(.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section) {
+  background-image: url('../assets/current-corner.svg'), linear-gradient(120deg, transparent 58%, var(--shore-wash));
+  background-position: right -34px top -30px, center;
+  background-size: 420px 238px, 100% 100%;
+  background-repeat: no-repeat;
+  background-clip: padding-box;
+}
+:root .content-surface .work-section {
+  background-image: url('../assets/tidal-route.svg'), linear-gradient(120deg, transparent 55%, var(--shore-wash));
+  background-position: right -15px top -20px, center;
+  background-size: 690px 195px, 100% 100%;
+}
+:root .content-surface .publications-section {
+  background-position: right -92px top -76px, center;
+  background-size: 470px 266px, 100% 100%;
+}
+:root .content-surface .perspective-section {
+  background-image: url('../assets/tidal-route.svg'), linear-gradient(135deg, transparent 54%, var(--shore-wash));
+  background-position: right -40px bottom -24px, center;
+  background-size: 770px 218px, 100% 100%;
+}
+:root .content-surface .travel-section {
+  background-position: right -44px top -56px, center;
+  background-size: 400px 226px, 100% 100%;
+}
+.content-surface .experience-band,
+html[data-theme="dark"] .content-surface .experience-band {
+  background-color: transparent;
+  background-image: url('../assets/tidal-route.svg'), linear-gradient(100deg, var(--shore-wash), transparent 65%);
+  background-position: left -160px bottom -32px, center;
+  background-size: 920px 260px, 100% 100%;
+  background-repeat: no-repeat;
+  border-color: var(--shore-edge);
+}
+.content-surface .contact-section,
+html[data-theme="dark"] .content-surface .contact-section {
+  background-color: transparent;
+  background-image: url('../assets/tidal-route.svg'), linear-gradient(175deg, transparent, var(--shore-wash));
+  background-position: center bottom -32px, center;
+  background-size: 1100px 310px, 100% 100%;
+  background-repeat: no-repeat;
+  border-top-color: var(--shore-edge);
+}
+:root .content-surface .contact-inner {
+  background-image: url('../assets/current-corner.svg');
+  background-position: right -85px top -95px;
+  background-size: 370px auto;
+  background-repeat: no-repeat;
+  background-clip: padding-box;
+}
+.site-footer { border-top: 1px solid var(--shore-edge); }
+@media (max-width: 800px) {
+  .content-surface, html[data-theme="dark"] .content-surface { background-size: 1100px 825px, 100% 1400px; }
+  :root .content-surface :is(.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section) { background-size: 300px auto, 100% 100%; background-position: right -68px top -40px, center; }
+  :root .content-surface .work-section { background-size: 550px auto, 100% 100%; background-position: right -145px top -20px, center; }
+  :root .content-surface .perspective-section { background-size: 620px auto, 100% 100%; background-position: right -95px bottom -35px, center; }
+}
+@media (max-width: 480px) {
+  .content-surface, html[data-theme="dark"] .content-surface { background-size: 850px 638px, 100% 1200px; }
+  :root .content-surface :is(.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section) { background-size: 240px auto, 100% 100%; background-position: right -95px top -36px, center; }
+  :root .content-surface .work-section, :root .content-surface .perspective-section { background-size: 450px auto, 100% 100%; background-position: right -190px top -24px, center; }
+  :root .content-surface .contact-inner { background-size: 260px auto; background-position: right -100px top -55px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root .content-surface :is(.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section, .contact-inner) { background-image: none; }
+}
+@media print {
+  .content-surface, html[data-theme="dark"] .content-surface,
+  :root .content-surface :is(.education-section, .work-section, .publications-section, .perspective-section, .travel-section, .notes-section, .experience-band, .contact-section, .contact-inner) { background-image: none !important; }
+  .site-footer { border-top: 0; }
+}

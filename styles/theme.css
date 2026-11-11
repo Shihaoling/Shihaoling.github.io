@@ -30,40 +30,6 @@ body { transition: background-color .35s ease, color .35s ease; }
 nav { gap: 22px; }
 nav .nav-contact { border-radius: 999px; border-color: #a9c0ca; background: #ffffff45; }
 .header-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.theme-toggle {
-  min-width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 13px;
-  border: 1px solid #ffffffea;
-  border-radius: 999px;
-  background: #eff7f5db;
-  color: #466e80;
-  box-shadow: 0 5px 16px #32596b16, inset 0 1px #fff;
-  font: 12px/1 var(--sans);
-  white-space: nowrap;
-  -webkit-backdrop-filter: blur(16px) saturate(1.25);
-  backdrop-filter: blur(16px) saturate(1.25);
-  transition: transform .25s ease, box-shadow .8s ease, background-color .8s ease, border-color .8s ease, color .8s ease;
-}
-.theme-symbol { position: relative; width: 20px; height: 20px; flex: 0 0 auto; display: grid; place-items: center; }
-.theme-symbol::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; background: #f1d18b7a; opacity: .6; transform: scale(.72); transition: background-color .8s ease, opacity .8s ease, transform .8s ease; }
-.theme-toggle .theme-icon { position: absolute; inset: 0; width: 20px; height: 20px; transition: opacity .55s ease, transform .85s cubic-bezier(.2,.8,.2,1); }
-.theme-icon-sun { opacity: 1; transform: rotate(0) scale(1); }
-.theme-icon-moon { opacity: 0; transform: rotate(-75deg) scale(.5); }
-html[data-theme="dark"] .theme-symbol::before { background: #c3daf07a; opacity: .7; transform: scale(1); }
-html[data-theme="dark"] .theme-icon-sun { opacity: 0; transform: rotate(105deg) scale(.5); }
-html[data-theme="dark"] .theme-icon-moon { opacity: 1; transform: rotate(0) scale(1); }
-.theme-label { display: grid; width: 24px; }
-.theme-label > span { grid-area: 1 / 1; transition: opacity .45s ease, transform .65s ease; }
-.theme-label-night { opacity: 0; transform: translateY(4px); }
-html[data-theme="dark"] .theme-label-day { opacity: 0; transform: translateY(-4px); }
-html[data-theme="dark"] .theme-label-night { opacity: 1; transform: translateY(0); }
-.theme-toggle:focus-visible { outline: 3px solid #8eb9c9; outline-offset: 3px; }
-.theme-toggle:active { transform: scale(.95); }
 .ocean-scene::before {
   content: '';
   position: absolute;
@@ -171,7 +137,6 @@ html[data-theme="dark"] body { background: #0e1b27; }
 html[data-theme="dark"] .site-header { background: #172b39; border-bottom-color: #90b7c332; box-shadow: 0 5px 24px #020b1442, inset 0 1px #ffffff18; }
 html[data-theme="dark"] .brand-name > span, html[data-theme="dark"] nav a { color: #d4e2e9; }
 html[data-theme="dark"] nav .nav-contact { border-color: #7397a67a; background: #a7cfdf12; }
-html[data-theme="dark"] .theme-toggle { background: #294858d9; color: #e7f0f6; border-color: #a5c6d45c; box-shadow: 0 6px 20px #0005, inset 0 1px #ffffff29; }
 html[data-theme="dark"] .menu-toggle span { background: #e5f0f4; }
 html[data-theme="dark"] .sky-decor { filter: drop-shadow(0 10px 28px #c4ddff4d); opacity: .88; }
 html[data-theme="dark"] .sky-day { opacity: 0; transform: translateY(-8px) scale(.94); }
@@ -254,7 +219,6 @@ html[data-theme="dark"] .dialog-context, html[data-theme="dark"] .dialog-footnot
   html[data-theme="dark"] .profile-fact { background: #2b4b5eb8; }
 }
 @media (hover: hover) and (pointer: fine) {
-  .theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 9px 22px #31586e24, inset 0 1px #fff; }
   .profile-overview:hover::after { opacity: .8; transform: translate(26px, 12px); }
   .profile-fact:hover { transform: translateY(-2px); border-color: #a5cad3; box-shadow: 0 9px 20px #3e69731a, inset 0 1px #fff; }
   .project-card:hover, .publication-card:hover { transform: translateY(-3px); border-color: #a9c6cc; box-shadow: 0 16px 35px #284d5e19, inset 0 1px #fff; }
@@ -267,8 +231,7 @@ html[data-theme="dark"] .dialog-context, html[data-theme="dark"] .dialog-footnot
 }
 @media (max-width: 600px) {
   .nav-wrap { gap: 8px; }
-  .theme-toggle { width: 44px; padding: 0; }
-  .theme-label, .sky-decor { display: none; }
+  .sky-decor { display: none; }
   .ocean-scene::before { background-position: center, 60% center; }
   .profile-overview { border-radius: 16px; }
   .profile-fact { border-radius: 8px; }

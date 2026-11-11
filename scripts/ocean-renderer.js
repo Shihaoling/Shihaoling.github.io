@@ -3,6 +3,22 @@ const TAU = Math.PI * 2;
 const clamp = (value, low = 0, high = 1) => Math.max(low, Math.min(high, value));
 const mix = (a, b, amount) => a + (b - a) * amount;
 const rgb = (day, night, amount, alpha = 1) => `rgba(${day.map((v, i) => Math.round(mix(v, night[i], amount))).join(',')},${alpha})`;
+const smooth = (start, end, value) => { const t = clamp((value - start) / (end - start)); return t * t * (3 - 2 * t); };
+
+// One reversible path: the sun crosses the horizon before the moon rises.
+export function getCelestialCycle(night, horizon, anchor, width) {
+  const phase = clamp(night);
+  const sunset = smooth(0, .55, phase);
+  const moonrise = smooth(.43, 1, phase);
+  const below = horizon + anchor.radius * 1.45;
+  const arc = Math.min(70, width * .085);
+  return {
+    sun: { ...anchor, x: anchor.x - Math.sin(sunset * Math.PI / 2) * arc, y: mix(anchor.y, below, sunset) },
+    moon: { ...anchor, x: anchor.x - Math.sin((1 - moonrise) * Math.PI / 2) * arc, y: mix(below, anchor.y, moonrise) },
+    stars: smooth(.48, .94, phase),
+    dusk: Math.sin(phase * Math.PI) ** 4,
+  };
+}
 
 /** The same gentle swell carries both the water and each boat. */
 export function sampleWave(x, y, time, horizon, height) {
@@ -68,17 +84,19 @@ export function createOceanRenderer(canvas) {
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
   }
 
-  function sky(time, night, horizon, sun) {
+  function sky(time, night, horizon, anchor, cycle) {
     const fill = ctx.createLinearGradient(0, 0, 0, horizon + 30);
     fill.addColorStop(0, rgb([178, 211, 224], [20, 39, 63], night));
     fill.addColorStop(.65, rgb([207, 228, 232], [39, 62, 83], night));
-    fill.addColorStop(1, rgb([237, 237, 218], [74, 95, 113], night));
+    const baseHorizon = [237, 237, 218].map((v, i) => mix(v, [74, 95, 113][i], night));
+    fill.addColorStop(1, rgb(baseHorizon, [235, 178, 142], cycle.dusk * .55));
     ctx.fillStyle = fill; ctx.fillRect(0, 0, width, horizon + 30);
 
-    if (night > .005) {
+    if (cycle.stars > .005) {
       for (const star of stars) {
-        const y = 28 + star.y * Math.max(1, horizon - 72);
-        const alpha = night * (.25 + .3 * (.5 + .5 * Math.sin(time * .27 + star.phase)));
+        const reveal = smooth(star.x * .18, .8 + star.x * .18, cycle.stars);
+        const y = 28 + star.y * Math.max(1, horizon - 72) + (1 - reveal) * Math.min(42, (horizon - anchor.y) * .35);
+        const alpha = reveal * (.25 + .3 * (.5 + .5 * Math.sin(time * .27 + star.phase)));
         ctx.fillStyle = `rgba(231,240,239,${alpha})`;
         ctx.beginPath(); ctx.arc(star.x * width, y, star.radius, 0, TAU); ctx.fill();
       }
@@ -99,30 +117,34 @@ export function createOceanRenderer(canvas) {
       ctx.fill();
     }
 
-    const { x, y, radius: r } = sun;
-    const halo = ctx.createRadialGradient(x, y, r * .45, x, y, r * 3.6);
-    halo.addColorStop(0, rgb([255, 238, 173], [196, 219, 230], night, .19));
-    halo.addColorStop(1, rgb([255, 238, 173], [196, 219, 230], night, 0));
-    ctx.fillStyle = halo; ctx.fillRect(x - r * 4, y - r * 4, r * 8, r * 8);
-    if (night < .999) {
-      ctx.globalAlpha = 1 - night;
-      const disk = ctx.createLinearGradient(0, y - r, 0, y + r);
-      disk.addColorStop(0, '#fff2c4'); disk.addColorStop(1, '#efd9aa');
-      ctx.fillStyle = disk; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, width, horizon); ctx.clip();
+    for (const [kind, body] of [['sun', cycle.sun], ['moon', cycle.moon]]) {
+      const { x, y, radius: r } = body;
+      if (y - r >= horizon) continue;
+      const moon = kind === 'moon';
+      const edge = clamp((horizon + r - y) / (r * 2));
+      const halo = ctx.createRadialGradient(x, y, r * .45, x, y, r * 3.6);
+      halo.addColorStop(0, rgb([255, 224, 157], [196, 219, 230], Number(moon), .19 * edge));
+      halo.addColorStop(1, rgb([255, 224, 157], [196, 219, 230], Number(moon), 0));
+      ctx.fillStyle = halo; ctx.fillRect(x - r * 4, y - r * 4, r * 8, r * 8);
+      if (!moon) {
+        const disk = ctx.createLinearGradient(0, y - r, 0, y + r);
+        disk.addColorStop(0, rgb([255, 242, 196], [255, 210, 153], cycle.dusk));
+        disk.addColorStop(1, rgb([239, 217, 170], [229, 162, 123], cycle.dusk));
+        ctx.fillStyle = disk; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+      } else {
+        ctx.fillStyle = '#e5eee9'; ctx.beginPath();
+        ctx.moveTo(x + r * .5, y - r * .866);
+        ctx.arc(x, y, r, -Math.PI / 3, Math.PI / 3, true);
+        ctx.bezierCurveTo(x - r * .5, y + r * .53, x - r * .5, y - r * .53, x + r * .5, y - r * .866);
+        ctx.fill();
+      }
     }
-    if (night > .001) {
-      ctx.globalAlpha = night;
-      ctx.fillStyle = '#e5eee9';
-      ctx.beginPath();
-      ctx.moveTo(x + r * .5, y - r * .866);
-      ctx.arc(x, y, r, -Math.PI / 3, Math.PI / 3, true);
-      ctx.bezierCurveTo(x - r * .5, y + r * .53, x - r * .5, y - r * .53, x + r * .5, y - r * .866);
-      ctx.fill();
-    }
+    ctx.restore();
     ctx.globalAlpha = 1;
   }
 
-  function sea(time, night, horizon, sun) {
+  function sea(time, night, horizon, anchor, cycle) {
     const seaHeight = Math.max(1, height - horizon);
     const water = ctx.createLinearGradient(0, horizon, 0, height);
     water.addColorStop(0, rgb([128, 181, 190], [64, 100, 120], night));
@@ -149,20 +171,24 @@ export function createOceanRenderer(canvas) {
     }
 
     // A broken, widening light path belongs to the sun/moon above it.
-    for (let i = 0; i < 31; i++) {
+    for (const [kind, body] of [['sun', cycle.sun], ['moon', cycle.moon]]) {
+      const strength = clamp((horizon + body.radius * .3 - body.y) / Math.max(1, horizon - anchor.y));
+      if (strength <= 0) continue;
+      for (let i = 0; i < 31; i++) {
       const depth = (i / 31) ** 1.65;
       const y = horizon + 2 + depth * seaHeight;
       const spread = 3 + depth * Math.min(115, width * .17);
       const drift = Math.sin(i * 2.4 + time * .44) * spread * .32;
       const half = spread * (.33 + .23 * Math.sin(i * 3.83 + time * .21));
-      const alpha = (.17 - depth * .11) * (.7 + .3 * Math.sin(i * 1.8 + time * .5));
-      ctx.strokeStyle = rgb([255, 239, 187], [200, 224, 231], night, alpha);
+      const alpha = (.17 - depth * .11) * (.7 + .3 * Math.sin(i * 1.8 + time * .5)) * strength;
+      ctx.strokeStyle = rgb([255, 225, 176], [200, 224, 231], Number(kind === 'moon'), alpha);
       ctx.lineWidth = 1 + depth * 2.8;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(sun.x + drift - half, y);
-      ctx.quadraticCurveTo(sun.x + drift, y + Math.sin(i + time * .5) * 1.8, sun.x + drift + half, y);
+      ctx.moveTo(body.x + drift - half, y);
+      ctx.quadraticCurveTo(body.x + drift, y + Math.sin(i + time * .5) * 1.8, body.x + drift + half, y);
       ctx.stroke();
+      }
     }
 
     // Short curved wave crests, with distant crests smaller and closer together.
@@ -258,10 +284,11 @@ export function createOceanRenderer(canvas) {
     night = clamp(night);
     horizon = clamp(horizon, 70, Math.max(70, height - 30));
     const sun = celestial || { x: width * .83, y: horizon * .45, radius: Math.min(30, width * .065) };
+    const cycle = getCelestialCycle(night, horizon, sun, width);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.globalAlpha = 1;
-    sky(time, night, horizon, sun);
-    sea(time, night, horizon, sun);
+    sky(time, night, horizon, sun, cycle);
+    sea(time, night, horizon, sun, cycle);
     event(skyEvent, night, horizon, sun);
     [...boats].sort((a, b) => a.y - b.y).forEach(item => boat(item, time, night));
   }
