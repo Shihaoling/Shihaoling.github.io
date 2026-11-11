@@ -1,4 +1,4 @@
-import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-moonlight';
+import { createOceanRenderer, sampleWave, getCelestialCycle } from './ocean-renderer.js?v=20261111-reflections';
 import { createSkyEvent } from './sky-effects.js?v=20261111-moonlight';
 import { spaceBoats } from './boat-spacing.js?v=20261111-moonlight';
 
@@ -49,6 +49,8 @@ export function initSeaside() {
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   const canAnimate = () => !reduced.matches && (!paused || motionSpeed > 0 || !!motionJourney);
   const canRun = () => visible && focused && !document.hidden;
+  const hasAnimatedSky = () => !!skyEvent && !skyEvent.staticPreview && !reduced.matches;
+  const needsFrame = () => canAnimate() || hasAnimatedSky() || night !== targetNight;
   function updateLabels() {
     const isNight = targetNight === 1;
     scene.querySelector('#seaside-time').textContent = isNight ? '入夜' : '白天';
@@ -115,7 +117,7 @@ export function initSeaside() {
         opacity: boat.resting ? 1 : clamp(Math.min(p.age / 1.2, (boatLifetime - p.age) / 3), 0, 1), phase: boat.id * 2,
       };
     }), layout.left, layout.widthOfScene);
-    const skyProgress = skyEvent ? clamp((time - skyEvent.born) / skyEvent.duration, 0, 1) : 0;
+    const skyProgress = skyEvent ? clamp(skyEvent.elapsed / skyEvent.duration, 0, 1) : 0;
     painter.render({ time, night, horizon: layout.horizon, celestial: layout.celestial, sceneBounds: layout.sceneBounds, boats: drawn, skyEvent: skyEvent ? { ...skyEvent, progress: skyProgress } : null });
     // DOM-facing state also makes lifecycle and interaction regression checks possible.
     canvas.dataset.boats = String(drawn.length);
@@ -164,12 +166,16 @@ export function initSeaside() {
         updateLabels(); armStaticSkyExpiry();
       }
     }
-    // Integrate a shared, eased clock so waves, wakes, boats and sky never jump.
+    // Waves, wakes and boats share an eased clock. A requested sky animation
+    // has its own clock so pausing the sea never strands a flock mid-flight.
     const motionDt = reduced.matches ? 0 : dt * (previousSpeed + motionSpeed) / 2;
     if (motionDt > 0) {
       time += motionDt;
       for (let i = boats.length - 1; i > 0; i--) if (time - boats[i].born >= boatLifetime) boats.splice(i, 1);
-      if (skyEvent && time - skyEvent.born >= skyEvent.duration) clearSky();
+    }
+    if (hasAnimatedSky()) {
+      skyEvent.elapsed += dt;
+      if (skyEvent.elapsed >= skyEvent.duration) clearSky();
     }
     if (reduced.matches) { night = targetNight; themeJourney = null; }
     else if (themeJourney) {
@@ -180,20 +186,29 @@ export function initSeaside() {
       if (progress === 1) { night = targetNight; themeJourney = null; }
     }
     render(motionDt);
-    if (canAnimate() || night !== targetNight) schedule();
+    if (needsFrame()) schedule();
     else lastStamp = 0;
   }
   function schedule() {
-    if (!frame && canRun() && (canAnimate() || night !== targetNight)) frame = requestAnimationFrame(tick);
+    if (!frame && canRun() && needsFrame()) frame = requestAnimationFrame(tick);
   }
   function armStaticSkyExpiry() {
     clearTimeout(skyClearTimer); skyClearTimer = 0;
-    // Pausing an existing flight preserves its exact pose until resume. Only
-    // a new static preview has a wall-clock expiry, including reduced motion.
-    if (skyEvent?.staticPreview && !canAnimate()) skyClearTimer = setTimeout(() => { clearSky(); render(0); }, (skyEvent.duration + .3) * 1000);
+    // Only the reduced-motion preview is static; ordinary sky events always
+    // finish on their own animation clock, including when the sea is paused.
+    if (skyEvent?.staticPreview && canRun()) skyClearTimer = setTimeout(() => { clearSky(); render(0); }, (skyEvent.duration + .3) * 1000);
   }
   function clearSky() {
     clearTimeout(skyClearTimer); skyClearTimer = 0; skyEvent = null;
+  }
+  function suspend() {
+    cancelAnimationFrame(frame); frame = 0; lastStamp = 0; pointer = null;
+    clearTimeout(skyClearTimer); skyClearTimer = 0;
+    render(0);
+  }
+  function resume() {
+    focused = true;
+    armStaticSkyExpiry(); render(0); schedule();
   }
   function stop() {
     cancelAnimationFrame(frame); frame = 0; lastStamp = 0; pointer = null;
@@ -218,13 +233,14 @@ export function initSeaside() {
     render(0); schedule();
   });
   skyButton.addEventListener('click', () => {
-    if (!targetNight && skyEvent?.kind === 'birds') return;
+    // Keep the entire current flock/star sequence instead of resetting it.
+    if (skyEvent || night !== targetNight) return;
     if (performance.now() < skyCooldownUntil) return;
     skyCooldownUntil = performance.now() + 700;
     clearSky();
     const event = createSkyEvent(targetNight ? 'meteor' : 'birds');
-    const staticPreview = !canAnimate();
-    skyEvent = { ...event, born: time - (staticPreview ? event.duration * .42 : 0), staticPreview };
+    const staticPreview = reduced.matches;
+    skyEvent = { ...event, elapsed: staticPreview ? event.duration * .42 : 0, staticPreview };
     status.textContent = targetNight ? '流星划过，海面也亮起了星光。' : '海鸥掠过，阳光在波浪间闪动。';
     armStaticSkyExpiry();
     render(0); schedule();
@@ -235,8 +251,6 @@ export function initSeaside() {
     pointer = null;
     const to = paused ? 0 : 1;
     motionJourney = { from: motionSpeed, to, elapsed: 0, duration: Math.max(.2, (paused ? 2.4 : .9) * Math.abs(to - motionSpeed)) };
-    if (!paused && skyEvent) skyEvent.staticPreview = false;
-    armStaticSkyExpiry();
     updateLabels(); render(0); schedule();
   });
   scene.addEventListener('pointermove', event => {
@@ -247,12 +261,12 @@ export function initSeaside() {
   scene.addEventListener('pointerleave', () => { pointer = null; });
   document.documentElement.addEventListener('pointerleave', () => { pointer = null; });
   window.addEventListener('scroll', () => { pointer = null; }, { passive: true });
-  window.addEventListener('blur', () => { focused = false; stop(); });
-  window.addEventListener('focus', () => { focused = true; schedule(); });
+  window.addEventListener('blur', () => { focused = false; suspend(); });
+  window.addEventListener('focus', resume);
   window.addEventListener('pagehide', stop);
   window.addEventListener('pageshow', () => { focused = true; measure(); });
   window.addEventListener('hashchange', () => { stop(); schedule(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else { focused = true; schedule(); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) suspend(); else resume(); });
   reduced.addEventListener('change', () => { stop(); updateLabels(); render(0); schedule(); });
   fine.addEventListener('change', () => { pointer = null; });
   new IntersectionObserver(entries => {

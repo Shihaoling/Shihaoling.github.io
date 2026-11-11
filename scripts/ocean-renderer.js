@@ -23,6 +23,15 @@ export function getCelestialCycle(night, horizon, anchor, width) {
   };
 }
 
+/** Reflect only the visible part of the celestial body, including its last rim. */
+export function getReflectionStrength(body, horizon, anchor) {
+  const radius = Math.max(1, body.radius);
+  const above = horizon - body.y;
+  const visibleDisc = smooth(-radius, radius, above);
+  const altitude = clamp(above / Math.max(radius * 2, horizon - anchor.y));
+  return visibleDisc * (.42 + .58 * smooth(0, 1, altitude));
+}
+
 /** The same gentle swell carries both the water and each boat. */
 export function sampleWave(x, y, time, horizon, height) {
   const depth = clamp((y - horizon) / Math.max(1, height - horizon));
@@ -77,6 +86,11 @@ export function createOceanRenderer(canvas) {
     length: 5 + (index * 17 % 27),
     phase: index * 2.33,
   }));
+  const reflectionRows = Array.from({ length: 56 }, (_, index) => ({
+    fraction: (index + .35) / 56,
+    phase: index * 2.39996,
+    offset: Math.sin(index * 4.713),
+  }));
 
   function resize(nextWidth, nextHeight, dpr = 1) {
     width = Math.max(1, nextWidth);
@@ -85,6 +99,82 @@ export function createOceanRenderer(canvas) {
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function celestialReflection(time, kind, body, horizon, anchor) {
+    const strength = getReflectionStrength(body, horizon, anchor);
+    if (strength < .001) return;
+    const moon = kind === 'moon';
+    const seaHeight = Math.max(1, height - horizon);
+    const compact = width < 600;
+    const brightness = strength * (compact ? .78 : 1);
+    const spreadMax = Math.min(compact ? 76 : 165, width * .22);
+    const warm = [255, 222, 148], cool = [165, 212, 237];
+    const coreWarm = [255, 245, 204], coreCool = [225, 244, 248];
+    ctx.save(); ctx.beginPath(); ctx.rect(0, horizon, width, seaHeight); ctx.clip();
+    ctx.lineCap = 'round';
+
+    for (let i = 0; i < reflectionRows.length; i++) {
+      // Fewer far-water slivers on small displays, without changing their phase.
+      if (compact && i % 4 === 3) continue;
+      const row = reflectionRows[i];
+      const depth = row.fraction ** 1.62;
+      const baseY = horizon + 2 + depth * Math.max(1, seaHeight - 4);
+      const wave = sampleWave(body.x, baseY, time, horizon, height);
+      const span = 3.5 + depth ** .85 * spreadMax;
+      const centre = body.x + Math.sin(time * .54 + row.phase) * span * .16 + wave.lift * .8;
+      const y = baseY + wave.lift * .6;
+      const breath = .68 + .32 * Math.sin(time * .93 + row.phase);
+
+      // A feathered underglow is split into wave-width patches rather than a
+      // solid beam. Its edges are transparent even on a narrow viewport.
+      const wash = ctx.createLinearGradient(centre - span, y, centre + span, y);
+      wash.addColorStop(0, rgb(warm, cool, Number(moon), 0));
+      wash.addColorStop(.38, rgb(warm, cool, Number(moon), brightness * (.075 - depth * .025) * breath));
+      wash.addColorStop(.62, rgb(warm, cool, Number(moon), brightness * (.075 - depth * .025) * breath));
+      wash.addColorStop(1, rgb(warm, cool, Number(moon), 0));
+      ctx.strokeStyle = wash; ctx.lineWidth = 3 + depth * 7;
+      ctx.beginPath(); ctx.moveTo(centre - span, y);
+      ctx.quadraticCurveTo(centre, y + wave.roll * span * .3, centre + span, y); ctx.stroke();
+
+      // Alternate a split crest and an off-centre crest. Unequal bright pieces
+      // leave water between them, and all pieces move with sampleWave().
+      const split = i % 3 !== 1;
+      const fragments = split ? 2 : 1;
+      for (let part = 0; part < fragments; part++) {
+        const side = split ? (part ? 1 : -1) : row.offset * .4;
+        const shimmer = .7 + .3 * Math.sin(time * 1.12 + row.phase + part * 1.7);
+        const offset = side * span * (.38 + .1 * Math.sin(time * .65 + row.phase));
+        const half = span * (split ? .14 + shimmer * .12 : .31 + shimmer * .12);
+        const x = centre + offset;
+        const localWave = sampleWave(x, baseY, time, horizon, height);
+        const py = baseY + localWave.lift * .6 + (part ? 1 + depth * 1.5 : 0);
+        const alpha = brightness * (.40 - depth * .12) * shimmer;
+        const reflection = ctx.createLinearGradient(x - half, py, x + half, py);
+        reflection.addColorStop(0, rgb(warm, cool, Number(moon), 0));
+        reflection.addColorStop(.2, rgb(warm, cool, Number(moon), alpha * .75));
+        reflection.addColorStop(.5, rgb(coreWarm, coreCool, Number(moon), alpha));
+        reflection.addColorStop(.8, rgb(warm, cool, Number(moon), alpha * .75));
+        reflection.addColorStop(1, rgb(warm, cool, Number(moon), 0));
+        ctx.strokeStyle = reflection; ctx.lineWidth = .9 + depth * 3.5;
+        ctx.beginPath(); ctx.moveTo(x - half, py);
+        ctx.quadraticCurveTo(x, py + localWave.roll * half * .6, x + half, py); ctx.stroke();
+      }
+
+      // A few crests briefly catch the light. They use the same simulation
+      // clock, so pausing or slowing the water also settles these highlights.
+      if (i % 4 === 0) {
+        const glimmer = Math.max(0, Math.sin(time * 1.16 + row.phase)) ** 6;
+        if (glimmer > .08) {
+          const x = centre + row.offset * span * .35;
+          const half = 1.8 + depth * 5;
+          ctx.strokeStyle = rgb(coreWarm, coreCool, Number(moon), brightness * glimmer * .6);
+          ctx.lineWidth = .8 + depth * .7;
+          ctx.beginPath(); ctx.moveTo(x - half, y); ctx.lineTo(x + half, y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
   }
 
   function sky(time, night, horizon, anchor, cycle) {
@@ -181,26 +271,8 @@ export function createOceanRenderer(canvas) {
       ctx.stroke();
     }
 
-    // A broken, widening light path belongs to the sun/moon above it.
-    for (const [kind, body] of [['sun', cycle.sun], ['moon', cycle.moon]]) {
-      const strength = clamp((horizon + body.radius * .3 - body.y) / Math.max(1, horizon - anchor.y));
-      if (strength <= 0) continue;
-      for (let i = 0; i < 31; i++) {
-      const depth = (i / 31) ** 1.65;
-      const y = horizon + 2 + depth * seaHeight;
-      const spread = 3 + depth * Math.min(115, width * .17);
-      const drift = Math.sin(i * 2.4 + time * .74) * spread * .37;
-      const half = spread * (.41 + .25 * Math.sin(i * 3.83 + time * .43));
-      const alpha = (.26 - depth * .14) * (.7 + .3 * Math.sin(i * 1.8 + time * .8)) * strength;
-      ctx.strokeStyle = rgb([255, 225, 176], [200, 224, 231], Number(kind === 'moon'), alpha);
-      ctx.lineWidth = 1 + depth * 2.8;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(body.x + drift - half, y);
-      ctx.quadraticCurveTo(body.x + drift, y + Math.sin(i + time * .5) * 1.8, body.x + drift + half, y);
-      ctx.stroke();
-      }
-    }
+    celestialReflection(time, 'sun', cycle.sun, horizon, anchor);
+    celestialReflection(time, 'moon', cycle.moon, horizon, anchor);
 
     // Short curved wave crests, with distant crests smaller and closer together.
     for (const glint of glints) {
